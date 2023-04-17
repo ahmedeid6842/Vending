@@ -3,8 +3,8 @@ const {
     addMachineController,
     getMachineController,
     getNearestMachineController,
-    updateMachineContrller,
-    deleteMachineContrller
+    updateMachineController,
+    deleteMachineController
 } = require('../controller/machine');
 const { isAuthenticated } = require("../middleware/isAuthenticated");
 const { role } = require('../middleware/role');
@@ -13,8 +13,8 @@ const router = express.Router();
 
 router.post("/", isAuthenticated, role("admin"), addMachineController);
 router.get("/", getMachineController);
-router.get("/nearest/:long/:lat", getNearestMachineController);
-router.put("/:machineID", isAuthenticated, role("admin"), updateMachineContrller);
-router.delete("/:machineID", isAuthenticated, role("admin"), deleteMachineContrller);
+router.get("/nearest/:longitude/:latitude", getNearestMachineController);
+router.put("/:machineID", isAuthenticated, role("admin"), updateMachineController);
+router.delete("/:machineID", isAuthenticated, role("admin"), deleteMachineController);
 
 module.exports.Machine = router;

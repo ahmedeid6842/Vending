@@ -15,6 +15,6 @@ module.exports.getProductQueryValidation = (product) => {
         name: Joi.string().min(5).max(255).optional(),
         cost: Joi.number().integer().min(1).max(9999).optional(),
         sellerID: Joi.objectId().optional()
-    })
+    }).options({ abortEarly: false })
     return schema.validate(product);
 }

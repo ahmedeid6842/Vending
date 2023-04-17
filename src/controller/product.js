@@ -49,7 +49,7 @@ module.exports.updateProductController = async (req, res) => {
 
     let prodcut = await getProductsService({ _id: req.params.productID });
     if (!prodcut) return res.status(404).send({ message: "No product found " });
-   
+
     if (toString(prodcut[0].sellerID) != toString(req.user._id)) {
         return res.status(403).send({ message: "unauthorized to update this product" })
     }
@@ -66,7 +66,7 @@ module.exports.deleteProductController = async (req, res) => {
         * DONE: delete product with given ID
     */
     let prodcut = await getProductsService({ _id: req.params.productID });
-    if (!prodcut) return res.status(404).send({ message: "No product found " });
+    if (!prodcut) return res.status(404).send({ path: "productID", message: "No product found " });
 
     if (toString(prodcut[0].sellerID) != toString(req.user._id)) {
         return res.status(403).send({ message: "unauthorized to update this product" })
