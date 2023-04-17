@@ -20,7 +20,26 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'user'
+    },
+    machineID: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'vendingMachine'
+    },
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
     }
 })
+
+productSchema.index({ location: '2dsphere' });
+
 
 module.exports.ProductModel = mongoose.model('product', productSchema)

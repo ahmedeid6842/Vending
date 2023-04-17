@@ -19,6 +19,7 @@ const { initDB } = require("./config/connectRedis");
 const { User } = require("./routes/user")
 const { Product } = require("./routes/product")
 const { Payment } = require("./routes/payment")
+const { Machine } = require("./routes/machine")
 
 const app = express();
 
@@ -44,6 +45,7 @@ process.on("unhandledRejection", (ex) => {
 app.use("/user", User);
 app.use("/product", Product);
 app.use("/payment", isAuthenticated, role('buyer'), Payment);
+app.use("/machine", Machine)
 app.use((req, res) => {
     res.status(404).json({ message: 'the endpoint you trying to access not found' });
 });

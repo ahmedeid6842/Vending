@@ -19,7 +19,7 @@ module.exports.addProductController = async (req, res) => {
 module.exports.getProductController = async (req, res) => {
     /**
      * DONE: validate incoming request query 
-     * DONE: if there is requrest query passed then find prodcut based on query  - else return all prodcuts
+     * DONE: if there is a requst query passed then find prodcut based on query  - else return all prodcuts
      * DONE: adding pagination
      * DONE: populate the sellerID to get seller data too
      */
