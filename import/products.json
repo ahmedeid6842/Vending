@@ -1,0 +1,56 @@
+[{
+  "_id": {
+    "$oid": "643819bdcd15066e55bc0075"
+  },
+  "name": "chipse 1",
+  "cost": 15,
+  "amountAvailable": 1,
+  "sellerID": {
+    "$oid": "64381937cd15066e55bc006b"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64381a56cd15066e55bc007d"
+  },
+  "name": "chipse 2",
+  "cost": 12,
+  "amountAvailable": 2,
+  "sellerID": {
+    "$oid": "64381a2bcd15066e55bc007a"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64381a68cd15066e55bc0080"
+  },
+  "name": "pepsi 1",
+  "cost": 8,
+  "amountAvailable": 1,
+  "sellerID": {
+    "$oid": "64381a2bcd15066e55bc007a"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64381aa6cd15066e55bc0085"
+  },
+  "name": "chipse 3",
+  "cost": 10,
+  "amountAvailable": 6,
+  "sellerID": {
+    "$oid": "64381952cd15066e55bc006e"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64381ab7cd15066e55bc0088"
+  },
+  "name": "pepsi 2",
+  "cost": 14,
+  "amountAvailable": 6,
+  "sellerID": {
+    "$oid": "64381952cd15066e55bc006e"
+  },
+  "__v": 0
+}]

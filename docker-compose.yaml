@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  backend:
+   build: ./
+   ports:
+     - "3000:3000"
+   environment:
+     - MONGODB_URI=mongodb://mongo:27017/vending
+     - REDIS_HOST=redis
+     - REDIS_PORT=6379
+   depends_on:
+     - mongo
+  mongo:
+   image: mongo:4.0-xenial
+   volumes:
+     - vending:/data/db
+   ports:
+     - "27018:27017"
+  redis:
+   image: redis:6-alpine  
+   volumes:
+     - redis-conf:/usr/local/etc/redis/redis.conf
+   ports: 
+     - "6380:6379"
+volumes:
+  vending: 
+  redis-conf:

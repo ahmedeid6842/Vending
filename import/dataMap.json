@@ -1,0 +1,74 @@
+{
+    "users": [
+        {
+            "userName": "ahmed eid 1",
+            "password": "Test123456@",
+            "role": "buyer"
+        },
+        {
+            "userName": "ahmed eid 2",
+            "password": "Test123456@",
+            "role": "buyer"
+        },
+        {
+            "userName": "ahmed eid 3",
+            "password": "Test123456@",
+            "role": "seller"
+        },
+        {
+            "userName": "ahmed eid 4",
+            "password": "Test123456@",
+            "role": "seller"
+        },
+        {
+            "userName": "ahmed eid 5",
+            "password": "Test123456@",
+            "role": "seller"
+        }
+    ],
+    "products": [
+        {
+            "name": "chipse 1",
+            "cost": 15,
+            "seller": "ahmed eid 3",
+            "amountAvailable": 4
+        },
+        {
+            "name": "chipse 2",
+            "cost": 12,
+            "seller": "ahmed eid 4",
+            "amountAvailable": 2
+        },
+        {
+            "name": "chipse 3",
+            "cost": 10,
+            "seller": "ahmed eid 5",
+            "amountAvailable": 6
+        },
+        {
+            "name": "pepsi 1",
+            "cost": 8,
+            "seller": "ahmed eid 4",
+            "amountAvailable": 1
+        },
+        {
+            "name": "pepsi 2",
+            "cost": 14,
+            "seller": "ahmed eid 5",
+            "amountAvailable": 8
+        }
+    ],
+    "orders": [
+        {
+            "buyer": "ahmed eid 1",
+            "productsIDs": [
+                "chipse 1",
+                "pepsi 2"
+            ],
+            "quantites": [
+                3,
+                2
+            ]
+        }
+    ]
+}
