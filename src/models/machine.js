@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const machine = new mongoose.Schema({
+const machineSchema = new mongoose.Schema({
     name: {
         type: String,
         minlength: 5,
@@ -24,12 +24,13 @@ const machine = new mongoose.Schema({
     }]
 });
 
-machine.index({ location: '2dsphere' });
+machineSchema.index({ location: '2dsphere' });
 
 //DONE: cascade delete products when vending machine is deleted
-machine.pre('remove', async function (next) {
+machineSchema.pre('remove', async function (next) {
     await this.model('product').deleteMany({ machineID: this._id });
     next();
 });
 
-module.exports.MachineModel = mongoose.model('machine', machine);
+module.exports.machineSchema = machineSchema;
+module.exports.MachineModel = mongoose.model('machine', machineSchema);

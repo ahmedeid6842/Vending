@@ -1,4 +1,5 @@
 const { ProductModel } = require("../models/product");
+const cache = require('../utils/cache');
 
 module.exports.createProductService = async (product) => {
     try {
@@ -9,25 +10,28 @@ module.exports.createProductService = async (product) => {
     }
 }
 
-module.exports.getProductsService = async (queryObject, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
+module.exports.getProductsService = async (queryObject, isCache = false, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
     try {
         /**
          * DONE: adding skip and limit to the query with default value 0 ,, so if no value passed it'll not limit or skip
          * DONE: populate the sellerID based on populateCheck 
          */
-        let prodcuts = await ProductModel
+        let products = await ProductModel
             .find(queryObject)
             .skip(numOfSkip)
             .limit(numOfLimit)
             .populate(populateCheck ? "sellerID" : null)
-            .cache()
-        if (prodcuts.length == 0) return false;
+            .cache({ useCache: isCache })
 
-        return prodcuts;
+        if (products.length == 0) return false;
+
+        return products;
     } catch (error) {
         throw new Error(error);
     }
 }
+
+
 
 module.exports.updateProductService = async (queryObject, updateOperation) => {
     try {

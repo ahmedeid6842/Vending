@@ -9,7 +9,6 @@ module.exports.addMachineController = async (req, res) => {
      * DONE: add the machine with it's long,lat
      */
 
-
     const { error } = addMachineValidation(req.body);
     if (error) return res.status(400).send(error.details);
 
@@ -21,7 +20,7 @@ module.exports.getMachineController = async (req, res) => {
     /**
      * DONE: validate incoming request query
      * DONE: if there is a request query passed then find a machin based on query - else return all machines
-     * DONE: adding pagination
+     *  DONE: at this endpoint if location property was set is find exact match not the nearest one.
      */
     const { error } = getMachineQueryValidation(req.query);
     if (error) return res.status(400).send(error.details)
@@ -29,7 +28,7 @@ module.exports.getMachineController = async (req, res) => {
     const machinesPerPage = 10, pageNumber = req.query.page || 1;
     delete req.query.page;
 
-    const machines = await getMachinesService(req.query, false, true, (machinesPerPage * pageNumber) - machinesPerPage, machinesPerPage);
+    const machines = await getMachinesService(req.query, true, false, true, (machinesPerPage * pageNumber) - machinesPerPage, machinesPerPage);
     if (!machines) return res.status(404).send({ message: "No machine found" });
 
     return res.status(200).send(machines);
@@ -43,7 +42,7 @@ module.exports.getNearestMachineController = async (req, res) => {
     const { error } = getNearestMachineValidation(req.params);
     if (error) return res.status(400).send(error.details);
 
-    const machines = await getMachinesService({ location: [req.params.longitude, req.params.latitude] }, false, true, 0, 5);
+    const machines = await getMachinesService({ location: [req.params.longitude, req.params.latitude] }, true, false, true, 0, 5);
     if (!machines) return res.status(404).send({ message: "No machine found" });
 
     return res.status(200).send(machines);
@@ -59,7 +58,6 @@ module.exports.updateMachineController = async (req, res) => {
      */
     const { error } = addMachineValidation(req.body, true);
     if (error) return res.status(400).send(error.details);
-    // let machine = await getMachinesService({ _id: req.params.machineID });
 
     let updatedMachine = await updateMachineService({ _id: req.params.machineID }, { $set: req.body });
     if (!updatedMachine) return res.status(400).send({ message: "No machine found" });

@@ -12,8 +12,7 @@ module.exports.depositPaymentController = async (req, res) => {
     const { error } = addDepositValidation(req.body);
     if (error) return res.status(400).send(error.details);
 
-    req.user.deposit += req.body.amount;
-    req.user = await req.user.save();
+    req.user = await updateUserService({ _id: req.user._id }, { $inc: { deposit: req.body.amount } })
 
     return res.status(201).send({ message: "Deposit successful", accountBalance: req.user.deposit });
 }
@@ -35,7 +34,7 @@ module.exports.buyPaymentController = async (req, res) => {
      */
 
     if (req.user.deposit < req.orderTotalCost) {
-        return res.status(400).send({ path: 'deposit', message: `your order totla cost exceed your deposit ${req.user.deposit}, you need to pay more` })
+        return res.status(400).send({ path: 'deposit', message: `your order totla cost ${req.orderTotalCost} exceed your deposit ${req.user.deposit}, you need to pay more` })
     }
 
     req.user.deposit -= req.orderTotalCost;

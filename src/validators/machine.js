@@ -32,7 +32,7 @@ module.exports.getMachineQueryValidation = (machine) => {
     const schema = Joi.object({
         page: Joi.number().integer().min(1).max(300).required(),
         name: Joi.string().min(5).max(255).optional(),
-        id: Joi.objectId().optional(),
+        _id: Joi.objectId().optional(),
         location: Joi.array().items(
             Joi.number().min(-180).max(180).required(),
             Joi.number().min(-90).max(90).required()

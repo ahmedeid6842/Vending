@@ -12,7 +12,7 @@ mongoose.Query.prototype.cache = async function (option = {}) {
      * DONE: set flag to specify we will use cach for this mongoose query
      * DONE: set the hashkey
      * */
-    this.useCache = true;
+    this.useCache = option.useCache;
     this.hashKey = JSON.stringify(option.key || '');
     return this;
 }

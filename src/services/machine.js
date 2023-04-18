@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { MachineModel } = require("../models/machine")
 
 module.exports.createMachineService = async (machine) => {
@@ -11,16 +12,18 @@ module.exports.createMachineService = async (machine) => {
     }
 }
 
-module.exports.getMachinesService = async (queryMachine, nearest = false, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
+module.exports.getMachinesService = async (queryMachine, isCache = false, nearest = false, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
     /**
      * DONE: create pipeline for your aggregated query
      *  DONE: add finding by location using a point 
      *      DONE: if nearest = true then find the nearest machine, distance not exceed 5 kilos
      *      DONE: if nearest = false then find exacpoint
      *  DONE: add find based on the rest of passed query
+     *      DONE: if the name property exist, then make search using reg expression
+     *      DONE: if the _id property is exist then cast the _id to mongoose ObjectId
      *  DONE: populate the productsIDs based on populate check 
-     * DONE: adding pagination 
-     *  DONE: skip and limit to the query with default value 0 ,, so if no value passed it'll not limit or skip
+     *  DONE: adding pagination 
+     *      DONE: skip and limit to the query with default value 0 ,, so if no value passed it'll not limit or skip
     */
     try {
         let pipeLine = [];
@@ -51,6 +54,10 @@ module.exports.getMachinesService = async (queryMachine, nearest = false, popula
             });
             delete queryMachine.name;
         }
+        if (queryMachine._id) {
+            pipeLine.push({ $match: { _id: new mongoose.Types.ObjectId(queryMachine._id) } })
+            delete queryMachine._id;
+        }
 
         if (Object.keys(queryMachine).length !== 0) {
             pipeLine.push({ $match: { ...queryMachine } })
@@ -67,7 +74,12 @@ module.exports.getMachinesService = async (queryMachine, nearest = false, popula
             })
         }
 
-        let machines = await MachineModel.aggregate([...pipeLine, { $skip: numOfSkip }, { $limit: numOfLimit }]);
+        pipeLine.push({ $skip: numOfSkip })
+
+        if (numOfLimit > 0) {
+            pipeLine.push({ $limit: numOfLimit });
+        }
+        let machines = await MachineModel.aggregate([...pipeLine]);
         if (machines.length == 0) return false;
 
         return machines
@@ -79,7 +91,7 @@ module.exports.getMachinesService = async (queryMachine, nearest = false, popula
 module.exports.updateMachineService = async (queryMachine, updateOperation) => {
     try {
         let updateProduct = await MachineModel.findOneAndUpdate(queryMachine, updateOperation, { new: true })
-        
+
         if (!updateProduct) return false;
 
         return updateProduct;

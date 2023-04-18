@@ -4,7 +4,8 @@ module.exports.create_updateProdcutValidation = (product, isUpdate = false) => {
     const schema = Joi.object({
         name: Joi.string().min(5).max(255).presence(isUpdate ? 'optional' : 'required'),
         cost: Joi.number().min(1).max(9999).presence(isUpdate ? 'optional' : 'required'),
-        amountAvailable: Joi.number().min(1).max(9999).presence(isUpdate ? 'optional' : 'required')
+        amountAvailable: Joi.number().min(1).max(9999).presence(isUpdate ? 'optional' : 'required'),
+        machineID:Joi.objectId().presence(isUpdate ? 'optional' : 'required')
     }).or('name', 'cost', 'amountAvailable').options({ abortEarly: false })
     return schema.validate(product);
 }

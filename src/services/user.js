@@ -1,9 +1,9 @@
 const { UserModel } = require("../models/user")
 
-module.exports.getUserService = async (queryObject) => {
+module.exports.getUserService = async (queryObject, isCache = false) => {
     try {
 
-        let user = await UserModel.findOne(queryObject).cache()
+        let user = await UserModel.findOne(queryObject).cache({ useCache: isCache })
         return user ? user : false;
     } catch (error) {
         throw new Error(error);
@@ -39,7 +39,7 @@ module.exports.deleteUserService = async (queryObject) => {
 
 module.exports.addOrderToUserService = async (userID, order) => {
     try {
-       
+
         let updatedUser = await UserModel.findByIdAndUpdate(userID, { $push: { orders: order } }, { new: true })
         return updatedUser;
     } catch (error) {
