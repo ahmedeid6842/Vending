@@ -31,7 +31,51 @@ module.exports.getProductsService = async (queryObject, isCache = false, populat
     }
 }
 
+module.exports.getNearestProductService = async (queryObject) => {
+    try {
+        //DONE: find the nearest product based on property in queryObject 
+        let pipeLine = [];
+        if (queryObject.location) {
+            pipeLine.push({
+                $geoNear: {
+                    near: {
+                        type: 'Point',
+                        coordinates: [parseFloat(queryObject.location[0]), parseFloat(queryObject.location[1])]
+                    },
 
+                    distanceField: 'distance',
+                    spherical: true,
+                    maxDistance: 100000
+                }
+            })
+            delete queryObject.location;
+        }
+
+        if (queryObject.name) {
+            pipeLine.push({
+                $match: {
+                    name: {
+                        $regex: queryObject.name,
+                        $options: 'i'
+                    }
+                }
+            });
+            delete queryObject.name;
+        }
+
+        if (queryObject._id) {
+            pipeLine.push({ $match: { _id: new mongoose.Types.ObjectId(queryObject._id) } })
+            delete queryObject._id;
+        }
+
+        let products = await ProductModel.aggregate([...pipeLine]);
+
+        if (products.length == 0) return false;
+        return products;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
 
 module.exports.updateProductService = async (queryObject, updateOperation) => {
     try {

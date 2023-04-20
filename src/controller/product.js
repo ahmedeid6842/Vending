@@ -1,5 +1,5 @@
-const { create_updateProdcutValidation, getProductQueryValidation } = require("../validators/product")
-const { createProductService, getProductsService, getCacheProductsService, updateProductService, deleteProductService } = require("../services/product");
+const { create_updateProdcutValidation, getProductQueryValidation, getNearestProductQueryValidation } = require("../validators/product")
+const { createProductService, getProductsService, updateProductService, deleteProductService, getNearestProductService } = require("../services/product");
 const { getMachinesService, updateMachineService } = require("../services/machine");
 
 module.exports.addProductController = async (req, res) => {
@@ -48,6 +48,21 @@ module.exports.getProductController = async (req, res) => {
     return res.status(200).send(prodcuts);
 }
 
+module.exports.getNearestProductController = async (req, res) => {
+    /**
+     * DONE: validating the incoming request query 
+     *  DONE: in the query the client provide his current location     
+     * DONE: call getNearestProductService to find where nearest 100 KiloMeter product in the query  
+     */
+
+    const { error } = getNearestProductQueryValidation(req.query);
+    if (error) return res.status(400).send(error.details);
+
+    const products = await getNearestProductService(req.query);
+    if (!products) return res.status(404).send({ message: "This product is not available in your vicinity " })
+
+    return res.status(200).send(products);
+}
 module.exports.updateProductController = async (req, res) => {
     /**
      * DONE: user must be authenticated 
