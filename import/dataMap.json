@@ -1,6 +1,11 @@
 {
     "users": [
         {
+            "userName": "ahmed eid 0",
+            "password": "Test123456@",
+            "role": "admin"
+        },
+        {
             "userName": "ahmed eid 1",
             "password": "Test123456@",
             "role": "buyer"
@@ -31,31 +36,58 @@
             "name": "chipse 1",
             "cost": 15,
             "seller": "ahmed eid 3",
-            "amountAvailable": 4
+            "amountAvailable": 4,
+            "Machine": "Machine 1"
         },
         {
             "name": "chipse 2",
             "cost": 12,
             "seller": "ahmed eid 4",
-            "amountAvailable": 2
+            "amountAvailable": 2,
+            "Machine": "Machine 2"
         },
         {
             "name": "chipse 3",
             "cost": 10,
             "seller": "ahmed eid 5",
-            "amountAvailable": 6
+            "amountAvailable": 6,
+            "Machine": "Machine 1"
         },
         {
             "name": "pepsi 1",
             "cost": 8,
             "seller": "ahmed eid 4",
-            "amountAvailable": 1
+            "amountAvailable": 1,
+            "Machine": "Machine 2"
         },
         {
             "name": "pepsi 2",
             "cost": 14,
             "seller": "ahmed eid 5",
-            "amountAvailable": 8
+            "amountAvailable": 8,
+            "Machine": "Machine 1"
+        }
+    ],
+    "machines": [
+        {
+            "name": "Machine 1",
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    30.62117421929575,
+                    32.26839881018151
+                ]
+            }
+        },
+        {
+            "name": "Machine 2",
+            "location": {
+                "type": "Point",
+                "coordinates": [
+                    30.849865904249214,
+                    32.30459880152494
+                ]
+            }
         }
     ],
     "orders": [

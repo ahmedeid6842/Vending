@@ -42,7 +42,7 @@ module.exports.getNearestMachineController = async (req, res) => {
     const { error } = getNearestMachineValidation(req.params);
     if (error) return res.status(400).send(error.details);
 
-    const machines = await getMachinesService({ location: [req.params.longitude, req.params.latitude] }, true, false, true, 0, 5);
+    const machines = await getMachinesService({ location: [req.params.longitude, req.params.latitude] }, true, true, true, 0, 5);
     if (!machines) return res.status(404).send({ message: "No machine found" });
 
     return res.status(200).send(machines);

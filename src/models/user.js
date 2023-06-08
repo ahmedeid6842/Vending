@@ -70,7 +70,7 @@ userSchema.pre('findOneAndUpdate', async function (next) {
      */
     const newPassword = this.getUpdate().$set?.password;
     if (!newPassword) return next();
-    const salt = await bcrypt.genSalt(process.env.SALT_WORK_FACTOR);
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_WORK_FACTOR));
     const hash = await bcrypt.hash(newPassword, salt);
     this.set({ password: hash })
     return next();

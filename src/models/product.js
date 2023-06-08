@@ -42,12 +42,12 @@ const productSchema = new mongoose.Schema({
         type: Date,
         default: null,
     }
-})
+}, { timestamps: true })
 
 productSchema.index({ location: '2dsphere' });
 
 //DONE: added index to createdAt with expiration so the product will be removed after 30 days from createdAt is set
-productSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60*60*24*30 });
+productSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 30 });
 
 productSchema.post('findOneAndUpdate', async function (product, next) {
     /**

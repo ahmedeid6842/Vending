@@ -78,7 +78,7 @@ module.exports.updateProductController = async (req, res) => {
     let prodcut = await getProductsService({ _id: req.params.productID });
     if (!prodcut) return res.status(404).send({ message: "No product found " });
 
-    if (toString(prodcut[0].sellerID) != toString(req.user._id)) {
+    if (!prodcut[0].sellerID.equals(req.user._id)) {
         return res.status(403).send({ message: "unauthorized to update this product" })
     }
 

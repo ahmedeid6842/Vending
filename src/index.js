@@ -47,7 +47,7 @@ app.use("/product", Product);
 app.use("/payment", isAuthenticated, role('buyer'), Payment);
 app.use("/machine", Machine)
 app.use((req, res) => {
-    res.status(404).json({ message: 'the endpoint you trying to access not found' });
+    res.status(404).json({ message: `the endpoint ${req.url} you trying to access not found` });
 });
 app.use(errorHandler);
 
