@@ -1,0 +1,607 @@
+openapi: "3.0.0"
+info:
+  description: "API Reference"
+  version: "1.0.0"
+  title: "Vending Machine API"
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ahmedeid6842/Vending/1.0.0
+  - url: "http://localhost:3000/v1"
+paths:
+  /user/register:
+    post:
+      tags:
+        - User
+      summary: Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      responses:
+        '201':
+          description: Created
+          headers:
+            Set-Cookie:
+              description: Access token for authentication
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserRegistrationResponse"
+
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserLogin"
+      responses:
+        '200':
+          description: OK
+          headers:
+            Set-Cookie:
+              description: Access token for authentication
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserLoginResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /user/logout:
+    get:
+      tags:
+        - User
+      summary: Logout
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /user:
+    get:
+      tags:
+        - User    
+      summary: Get current user
+      description: Returns the profile of the currently logged-in user.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+      security:
+        - cookieAuth: []
+    put:
+      tags:
+        - User
+      summary: Update current user
+      description: Updates the profile of the currently logged-in user.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                  minLength: 8
+                password:
+                  type: string
+                  minLength: 8
+                  pattern: '^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+                role:
+                  type: string
+                  enum: [buyer, seller]
+              required:
+                - userName
+                - password
+                - role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+      security:
+        - cookieAuth: []
+    delete:
+      tags:
+        - User  
+      summary: Delete current user
+      description: Deletes the profile of the currently logged-in user.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - cookieAuth: []
+  /product:
+    post:
+      tags:
+        - product
+      summary: Create a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: The created product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+    get:
+      tags:
+        - product
+      summary: Get products
+      parameters:
+        - name: page
+          in: query
+          description: The page number of the returned products (for pagination)
+          required: true
+          schema:
+            type: integer
+        - name: name
+          in: query
+          description: The name of the product to get
+          required: false
+          schema:
+            type: string
+        - name: cost
+          in: query
+          description: The cost of the product to get
+          required: false
+          schema:
+            type: number
+        - name: sellerID
+          in: query
+          description: The ID of the seller whose products to get
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The products matching the query
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: No products found
+  /nearest:
+    get:
+      tags:
+        - product
+      summary: Get the nearest product to a location
+      parameters:
+        - name: name
+          in: query
+          description: The name of the product to search for
+          required: true
+          schema:
+            type: string
+        - name: _id
+          in: query
+          description: The ID of the product to search for
+          required: false
+          schema:
+            type: string
+        - name: location
+          in: query
+          description: Your current location as latitude and longitude, in the format "latitude,longitude"
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              format: float
+              minimum: -180
+              maximum: 180
+              example: [30.731071458055045, 32.22764122164489]
+      responses:
+        '200':
+          description: A list of products sorted by distance from the given location
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductWithDistance'
+        '400':
+          description: The request was improperly formatted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No products were found that match the given criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /product/{productID}:
+    put:
+      tags:
+        - product
+      summary: Update a product
+      parameters:
+        - name: productID
+          in: path
+          description: The ID of the product to update
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: The updated product data
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductData'
+      responses:
+        '200':
+          description: The product was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatedProduct'
+        '400':
+          description: The request was improperly formatted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The authenticated user is not authorized to update the product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The product with the given ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - product
+      summary: Delete a product
+      parameters:
+        - name: productID
+          in: path
+          description: The ID of the product to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: The product was deleted successfully
+        '400':
+          description: The request was improperly formatted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The authenticated user is not authorized to delete the product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The product with the given ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "647fffd15f8fe223d799afa3"
+        userName:
+          type: string
+          example: "ahmed eid 1"
+        role:
+          type: string
+          enum:
+            - buyer
+            - seller
+          example: "buyer"
+        deposit:
+          type: number
+          format: float
+          example: 0
+        orders:
+          type: array
+          items:
+            type: object
+          example: []
+      required:
+        - _id
+        - userName
+        - role
+        - deposit
+        - orders
+
+    UserRegistration:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: "User's name"
+        password:
+          type: string
+          description: "User's password"
+        role:
+          type: string
+          enum:
+            - buyer
+            - seller
+          description: "User's role at vending machine"
+      required:
+        - userName
+        - password
+        - role
+
+    UserRegistrationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "register successfully"
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - message
+        - user
+
+    UserLogin:
+      type: object
+      properties:
+        userName:
+          type: string
+          description: "User's name"
+        password:
+          type: string
+          description: "User's password"
+      required:
+        - userName
+        - password
+
+    UserLoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "login successfully"
+        user:
+          $ref: "#/components/schemas/User"
+      required:
+        - message
+        - user
+
+    LogoutResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "logged out"
+      required:
+        - message
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the product
+        cost:
+          type: number
+          description: The cost of the product
+        amountAvailable:
+          type: number
+          description: The amount of the product available in the vending machine
+        sellerID:
+          type: string
+          description: The ID of the seller who added the product
+        machineID:
+          type: string
+          description: The ID of the vending machine where the product is available
+        location:
+          type: object
+          properties:
+            type:
+              type: string
+              description: The type of location data (Point)
+            coordinates:
+              type: array
+              items:
+                type: number
+              description: The coordinates of the vending machine
+      required:
+        - name
+        - cost
+        - amountAvailable
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    ProductWithDistance:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the product
+        name:
+          type: string
+          description: The name of the product
+        cost:
+          type: number
+          format: float
+          description: The cost of the product
+        amountAvailable:
+          type: integer
+          description: The number of units of the product available for purchase
+        sellerID:
+          type: string
+          description: The ID of the seller of the product
+        machineID:
+          type: string
+          description: The ID of the vending machine that dispenses the product
+        location:
+          type: object
+          properties:
+            type:
+              type: string
+              description: The type of location data (always "Point")
+              example: "Point"
+            coordinates:
+              type: array
+              description: The latitude and longitude of the location as an array in the format [longitude, latitude]
+              items:
+                type: number
+                format: float
+                minimum: -180
+                maximum: 180
+              example: [30.596792908334017, 32.27660266724352]
+          description: The location of the vending machine that dispenses the product
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time when the product was added to the system
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time when the product was last updated in the system
+        __v:
+          type: integer
+          description: The version number of the product document in the database
+        distance:
+          type: number
+          format: float
+          description: The distance from the given location to the vending machine that dispenses the product, in meters
+          example: 13766.318647161375
+    UpdateProductData:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name of the product
+          example: "New product name"
+        cost:
+          type: number
+          format: float
+          description: The updated cost of the product
+          example: 1.5
+        amountAvailable:
+          type: integer
+          description: The updated number of units of the product available for purchase
+          example: 10
+    UpdatedProduct:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: The unique identifier of the updated product
+        name:
+          type: string
+          description: The updated name of the product
+        cost:
+          type: number
+          format: float
+          description: The updated cost of the product
+        amountAvailable:
+          type: integer
+          description: The updated number of units of the product available for purchase
+        sellerID:
+          type: string
+          description: The ID of the seller of the product
+        machineID:
+          type: string
+          description: The ID of the vending machine that dispenses the product
+        location:
+          type: object
+          properties:
+            type:
+              type: string
+              description: The type of location data (always "Point")
+              example: "Point"
+            coordinates:
+              type: array
+              description: The updated latitude and longitude of the location in the format "longitude, latitude"
+              items:
+                type: number
+                format: float
+                example: [32.22764122164489, 30.731071458055045]
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: accessjwt

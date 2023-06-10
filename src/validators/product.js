@@ -33,7 +33,7 @@ module.exports.getNearestProductQueryValidation = (product) => {
             Joi.number().min(-180).max(180).required(),
             Joi.number().min(-90).max(90).required()
         )
-    }).or("name", "_id","location").options({ abortEarly: false });
+    }).or("name", "_id").options({ abortEarly: false });
 
     return schema.validate(product);
 }
