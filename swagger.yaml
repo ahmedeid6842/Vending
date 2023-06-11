@@ -1,13 +1,13 @@
 openapi: "3.0.0"
 info:
-  description: "API Reference"
+  description: "This API provides endpoints for a vending machine that is accessible to both buyers and sellers. The API includes endpoints for adding, updating, and removing products, as well as depositing coins and making purchases. Authentication and authorization are used to control access to the endpoints based on user role (buyer or seller), and caching is implemented to improve performance. The API requires authentication tokens for requests that require a specific role (buyer or seller), and uses a time-to-live (TTL) value to cache frequently-requested queries."
   version: "1.0.0"
   title: "Vending Machine API"
 servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/ahmedeid6842/Vending/1.0.0
-  - url: "http://localhost:3000/v1"
+  - url: "http://localhost:3000/"
 paths:
   /user/register:
     post:
@@ -69,7 +69,7 @@ paths:
         - User
       summary: Logout
       security:
-        - cookieAuth: []
+        - accessJWT: []
       responses:
         '200':
           description: OK
@@ -100,7 +100,7 @@ paths:
                   user:
                     $ref: '#/components/schemas/User'
       security:
-        - cookieAuth: []
+        - accessJWT: []
     put:
       tags:
         - User
@@ -139,7 +139,7 @@ paths:
                   user:
                     $ref: '#/components/schemas/User'
       security:
-        - cookieAuth: []
+        - accessJWT: []
     delete:
       tags:
         - User  
@@ -156,11 +156,11 @@ paths:
                   message:
                     type: string
       security:
-        - cookieAuth: []
+        - accessJWT: []
   /product:
     post:
       tags:
-        - product
+        - Product
       summary: Create a product
       requestBody:
         required: true
@@ -183,7 +183,7 @@ paths:
           description: Forbidden
     get:
       tags:
-        - product
+        - Product
       summary: Get products
       parameters:
         - name: page
@@ -230,7 +230,7 @@ paths:
   /nearest:
     get:
       tags:
-        - product
+        - Product
       summary: Get the nearest product to a location
       parameters:
         - name: name
@@ -281,7 +281,7 @@ paths:
   /product/{productID}:
     put:
       tags:
-        - product
+        - Product
       summary: Update a product
       parameters:
         - name: productID
@@ -323,9 +323,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
-      tags:
-        - product
       summary: Delete a product
+      tags:
+        - Product      
       parameters:
         - name: productID
           in: path
@@ -354,6 +354,513 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /machine:
+    post:
+      tags:
+        - Machine
+      summary: Create a new vending machine
+      requestBody:
+        description: Request body containing the name and location of the vending machine.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Machine'
+      responses:
+        '201':
+          description: The vending machine was created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Machine'
+        '400':
+          description: Bad request due to invalid request data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: The error message.
+                    example: Invalid request data.
+                  errors:
+                    type: array
+                    description: An array of validation errors.
+                    items:
+                      type: object
+                      properties:
+                        message:
+                          type: string
+                          description: The error message.
+                          example: 'must be a string'
+                        path:
+                          type: array
+                          description: The path to the invalid data in the request body.
+                          items:
+                            type: string
+                          example: ['name']
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [admin]
+    x-codegen-request-body-name: body
+    get:
+      tags:
+        - Machine    
+      summary: Retrieves a list of vending machines based on query parameters
+      parameters:
+        - name: page
+          in: query
+          description: The page number of the returned list of vending machines
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 300
+        - name: name
+          in: query
+          description: The name of the vending machine to retrieve
+          required: false
+          schema:
+            type: string
+            minLength: 5
+            maxLength: 255
+        - name: location
+          in: query
+          description: The location of the vending machine to retrieve, represented as an array of longitude and latitude values
+          required: false
+          schema:
+            type: array
+            items:
+              type: number
+              minimum: -180
+              maximum: 180
+            minItems: 2
+            maxItems: 2
+        - name: _id
+          in: query
+          description: The ID of the vending machine to retrieve
+          required: false
+          schema:
+            type: string
+            pattern: '^[0-9a-fA-F]{24}$'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Machine'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+  /machine/nearest/{longitude}/{latitude}:
+    get:
+      tags:
+        - Machine
+      summary: Retrieves the nearest vending machine to the specified longitude and latitude
+      parameters:
+        - name: longitude
+          in: path
+          description: The longitude of the current location
+          required: true
+          schema:
+            type: number
+            minimum: -180
+            maximum: 180
+        - name: latitude
+          in: path
+          description: The latitude of the current location
+          required: true
+          schema:
+            type: number
+            minimum: -90
+            maximum: 90
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Machine'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
+  /machine/{machineID}:
+    put:
+      tags:
+        - Machine
+      description: Updates the specified vending machine.
+      parameters:
+        - name: machineID
+          in: path
+          required: true
+          description: The ID of the vending machine to update.
+          schema:
+            type: string
+      requestBody:
+        description: The updated details of the vending machine.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 5
+                  maxLength: 255
+                location:
+                  type: array
+                  items:
+                    type: number
+                  minItems: 2
+                  maxItems: 2
+                  example: [30.849865904249214, 32.30459880152494]
+      responses:
+        '200':
+          description: The updated vending machine.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: update succesfully
+                  updatedMachine:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      location:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            example: Point
+                          coordinates:
+                            type: array
+                            items:
+                              type: number
+                            example: [30.849865904249214, 32.30459880152494]
+                      __v:
+                        type: number
+                        example: 0
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    path:
+                      type: array
+                      items:
+                        type: string
+                    type:
+                      type: string
+                    context:
+                      type: object
+                      properties:
+                        pos:
+                          type: number
+                        value:
+                          type: number
+                        label:
+                          type: string
+                        key:
+                          type: number
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [admin]
+    delete:
+      tags:
+        - Machine
+      description: Deletes the specified vending machine.
+      parameters:
+        - name: machineID
+          in: path
+          required: true
+          description: The ID of the vending machine to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The specified vending machine has been deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: deleted succesfully
+        '404':
+          description: The specified vending machine was not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  path:
+                    type: string
+                    example: machine ID
+                  message:
+                    type: string
+                    example: no machine found
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: your aren't authorized, only admin role can perform this action
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [admin]
+  /payment/deposit:
+    post:
+      tags:
+        - Payment
+      description: Deposits money to the user's vending machine account balance.
+      requestBody:
+        description: The deposit amount.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  enum: [5, 10, 20, 50, 100]
+      responses:
+        '201':
+          description: The deposit was successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Deposit successful
+                  accountBalance:
+                    type: integer
+                    example: 20
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                    path:
+                      type: array
+                      items:
+                        type: string
+                    type:
+                      type: string
+                    context:
+                      type: object
+                      properties:
+                        valids:
+                          type: array
+                          items:
+                            type: integer
+                          example: [5, 10, 20, 50, 100]
+                        label:
+                          type: string
+                          example: amount
+                        value:
+                          type: integer
+                          example: 32
+                        key:
+                          type: string
+                          example: amount
+        '403':
+          description: Forbidden.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: your aren't authorized, only buyer role can perform this action
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [buyer]
+  /payment/buy:
+    post:
+      tags:
+        - Payment
+      description: Buys one or more products and creates an order.
+      requestBody:
+        description: The product IDs and quantities to buy.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productsIDs
+                - quantites
+              properties:
+                productsIDs:
+                  type: array
+                  description: The IDs of the products to buy.
+                  items:
+                    type: string
+                quantites:
+                  type: array
+                  description: The quantities of the products to buy.
+                  items:
+                    type: integer
+              example:
+                productsIDs: ["64811aedec72f5580f27f39a","64811b93ec72f5580f27f3a5"]
+                quantites: [3, 2]
+      responses:
+        '201':
+          description: The order was created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: ordered succesfully
+                  order:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderItem'
+                  orderTotalCost:
+                    type: integer
+                    example: 73
+                  remainingChange:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                      example: 1
+        '400':
+          description: Bad Request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid request
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Error'
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [buyer]
+    x-constraints:
+      - prodcutExist
+      - balance     
+      
+  /payment/reset:
+    put:
+      tags:
+        - Payment
+      summary: "Reset user's balance"
+      description: "Reset the user's deposit to zero and return the remaining change in coins (5, 10, 20, 50, or 100)."
+      responses:
+        '201':
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: "Success message"
+                  remainingChange:
+                    type: object
+                    description: "Remaining change in coins"
+                    additionalProperties:
+                      type: integer
+                      description: "Number of coins"
+                      enum: [5, 10, 20, 50, 100]
+              example:
+                message: "your deposit reset succesfull"
+                remainingChange:
+                  5: 1
+                  20: 4
+                  50: 2
+      security:
+        - isAuthenticated: []
+        - accessJWT: []
+        - role: [buyer]
 components:
   schemas:
     User:
@@ -485,7 +992,49 @@ components:
         - name
         - cost
         - amountAvailable
-
+    Machine:
+      type: object
+      required:
+        - name
+        - location
+      properties:
+        name:
+          type: string
+          description: The name of the vending machine.
+          minLength: 5
+          maxLength: 255
+          example: Machine 1
+        location:
+          type: object
+          description: The location of the vending machine, represented as a GeoJSON Point object.
+          properties:
+            type:
+              type: string
+              description: The type of GeoJSON object, which must be "Point".
+              example: Point
+            coordinates:
+              type: array
+              description: The coordinates of the vending machine's location, represented as a pair of longitude and latitude values.
+              items:
+                type: number
+              example: [30.62117421929575, 32.26839881018151]
+        products:
+          type: array
+          description: The products available in the vending machine.
+          items:
+            $ref: '#/components/schemas/Product'
+      example:
+        name: Machine 1
+        location:
+          type: Point
+          coordinates: [30.62117421929575, 32.26839881018151]
+        products:
+          - name: Coke
+            price: 1.5
+            quantity: 20
+          - name: Chips
+            price: 2.0
+            quantity: 15
     Error:
       type: object
       properties:
@@ -600,8 +1149,52 @@ components:
                 type: number
                 format: float
                 example: [32.22764122164489, 30.731071458055045]
+    OrderItem:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        cost:
+          type: integer
+        amountAvailable:
+          type: integer
+        sellerID:
+          type: string
+        machineID:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+        totalCost:
+          type: integer
+        quantity:
+          type: integer
+      required:
+        - _id
+        - name
+        - cost
+        - amountAvailable
+        - sellerID
+        - machineID
+        - totalCost
+        - quantity
   securitySchemes:
-    cookieAuth:
+    isAuthenticated:
+          type: apiKey
+          name: accessJWT
+          in: cookie
+    accessJWT:
       type: apiKey
+      name: accessJWT
       in: cookie
-      name: accessjwt
+    role:
+      type: apiKey
+      name: accessJWT
+      in: cookie
