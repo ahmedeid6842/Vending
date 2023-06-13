@@ -1,0 +1,46 @@
+[{
+  "_id": {
+    "$oid": "64800e11b936e499b30855f3"
+  },
+  "name": "Machine 2",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.849865904249214,
+      32.30459880152494
+    ]
+  },
+  "products": [
+    {
+      "$oid": "64811da3ec72f5580f27f3b5"
+    },
+    {
+      "$oid": "64811dceec72f5580f27f3ba"
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64811accec72f5580f27f395"
+  },
+  "name": "Machine 1",
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.596792908334017,
+      32.27660266724352
+    ]
+  },
+  "products": [
+    {
+      "$oid": "64811b77ec72f5580f27f3a0"
+    },
+    {
+      "$oid": "64811b93ec72f5580f27f3a5"
+    },
+    {
+      "$oid": "64811aedec72f5580f27f39a"
+    }
+  ],
+  "__v": 0
+}]

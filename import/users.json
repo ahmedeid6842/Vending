@@ -1,51 +1,15 @@
 [{
   "_id": {
-    "$oid": "64381924cd15066e55bc0068"
-  },
-  "userName": "ahmed eid 2",
-  "password": "$2b$10$SQ1jwL1Pc/ARARKeFcz7ieSmc51T1t32.O/XIXg0xW7RbzI7FmJOe",
-  "role": "buyer",
-  "deposit": 75,
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64381937cd15066e55bc006b"
-  },
-  "userName": "ahmed eid 3",
-  "password": "$2b$10$UENfkcVfAmBQT50lwP0DqeokxX98V7FRFnT5DCiOjc73L.Of5p0Pi",
-  "role": "seller",
-  "deposit": 45,
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64381952cd15066e55bc006e"
-  },
-  "userName": "ahmed eid 5",
-  "password": "$2b$10$K2OCAPjWVNLLM44JFf770u/lHov.FdNEHVca92ZfWiKaI4FDfSF4q",
-  "role": "seller",
-  "deposit": 28,
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64381a2bcd15066e55bc007a"
-  },
-  "userName": "ahmed eid 4",
-  "password": "$2b$10$vJQI6f3Z3IdjKtovMYylku42rFEau8gfLjy1CF7FI/K48MT6cFDeO",
-  "role": "seller",
-  "deposit": 0,
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64384079cf612040420459ee"
+    "$oid": "647fffd15f8fe223d799afa3"
   },
   "userName": "ahmed eid 1",
-  "password": "$2b$10$2nAG61IqMNopevv/pvzhuuOLOs2XFQTVVYgYijzl56cMOojq5R2/m",
+  "password": "$2b$10$TDdLOb4YOxWaYMdXBQo/LuNF4Xl3Q.qOfI/n3AUgQMutaFkkm2LfG",
   "role": "buyer",
-  "deposit": 0,
+  "deposit": 50,
   "orders": [
     {
       "_id": {
-        "$oid": "643819bdcd15066e55bc0075"
+        "$oid": "64811aedec72f5580f27f39a"
       },
       "name": "chipse 1",
       "totalCost": 45,
@@ -53,12 +17,110 @@
     },
     {
       "_id": {
-        "$oid": "64381ab7cd15066e55bc0088"
+        "$oid": "64811b93ec72f5580f27f3a5"
+      },
+      "name": "pepsi 2",
+      "totalCost": 28,
+      "quantity": 2
+    },
+    {
+      "_id": {
+        "$oid": "64811aedec72f5580f27f39a"
+      },
+      "name": "chipse 1",
+      "totalCost": 15,
+      "quantity": 1
+    },
+    {
+      "_id": {
+        "$oid": "64811b93ec72f5580f27f3a5"
+      },
+      "name": "pepsi 2",
+      "totalCost": 28,
+      "quantity": 2
+    },
+    {
+      "_id": {
+        "$oid": "64811aedec72f5580f27f39a"
+      },
+      "name": "chipse 1",
+      "totalCost": 15,
+      "quantity": 1
+    },
+    {
+      "_id": {
+        "$oid": "64811b93ec72f5580f27f3a5"
+      },
+      "name": "pepsi 2",
+      "totalCost": 28,
+      "quantity": 2
+    },
+    {
+      "_id": {
+        "$oid": "64811aedec72f5580f27f39a"
+      },
+      "name": "chipse 1",
+      "totalCost": 45,
+      "quantity": 3
+    },
+    {
+      "_id": {
+        "$oid": "64811b93ec72f5580f27f3a5"
       },
       "name": "pepsi 2",
       "totalCost": 28,
       "quantity": 2
     }
   ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "647fffff5f8fe223d799afa6"
+  },
+  "userName": "ahmed eid 2",
+  "password": "$2b$10$TYaQfEfORoMIpNWgINjVv.KMsfNG8S/iLJUh/52f5ClPw8GhDRZS6",
+  "role": "buyer",
+  "deposit": 0,
+  "orders": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6480002a5f8fe223d799afa9"
+  },
+  "userName": "ahmed eid 3",
+  "password": "$2b$10$kWwhVVn5SdqTBSiKURCFsOfmrGgCSFCJKcKi3PJ.JL4n6uI4622ki",
+  "role": "seller",
+  "deposit": 120,
+  "orders": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6480006f5f8fe223d799afac"
+  },
+  "userName": "ahmed eid 4",
+  "password": "$2b$10$vTQT/7.AOShFnP2VfWyJR.QOP83d.4E9pI69lMhiWPtjv1ZxDTRT6",
+  "role": "seller",
+  "deposit": 100,
+  "orders": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6480007b5f8fe223d799afaf"
+  },
+  "userName": "ahmed eid 5",
+  "password": "$2b$10$p9LpsiHh1UMd5GtUU12Ea.mIUreczXvw.nBKNwxle7GYIpUKiD.72",
+  "role": "seller",
+  "deposit": 112,
+  "orders": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64800b41b936e499b30855ec"
+  },
+  "userName": "ahmed eid 0",
+  "password": "$2b$10$q79LmT0sGF6pEN3wsAyCzeadSr/qq81Cuv9vtA5Juie0d2mFlmCF6",
+  "role": "admin",
+  "deposit": 0,
+  "orders": [],
   "__v": 0
 }]

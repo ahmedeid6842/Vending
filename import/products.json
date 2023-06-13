@@ -1,56 +1,132 @@
 [{
   "_id": {
-    "$oid": "643819bdcd15066e55bc0075"
+    "$oid": "64811aedec72f5580f27f39a"
   },
   "name": "chipse 1",
   "cost": 15,
-  "amountAvailable": 1,
+  "amountAvailable": 4,
   "sellerID": {
-    "$oid": "64381937cd15066e55bc006b"
+    "$oid": "6480002a5f8fe223d799afa9"
+  },
+  "machineID": {
+    "$oid": "64811accec72f5580f27f395"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.596792908334017,
+      32.27660266724352
+    ]
+  },
+  "createdAt": null,
+  "updatedAt": {
+    "$date": "2023-06-08T01:26:38.420Z"
   },
   "__v": 0
 },{
   "_id": {
-    "$oid": "64381a56cd15066e55bc007d"
-  },
-  "name": "chipse 2",
-  "cost": 12,
-  "amountAvailable": 2,
-  "sellerID": {
-    "$oid": "64381a2bcd15066e55bc007a"
-  },
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64381a68cd15066e55bc0080"
-  },
-  "name": "pepsi 1",
-  "cost": 8,
-  "amountAvailable": 1,
-  "sellerID": {
-    "$oid": "64381a2bcd15066e55bc007a"
-  },
-  "__v": 0
-},{
-  "_id": {
-    "$oid": "64381aa6cd15066e55bc0085"
+    "$oid": "64811b77ec72f5580f27f3a0"
   },
   "name": "chipse 3",
   "cost": 10,
   "amountAvailable": 6,
   "sellerID": {
-    "$oid": "64381952cd15066e55bc006e"
+    "$oid": "6480007b5f8fe223d799afaf"
+  },
+  "machineID": {
+    "$oid": "64811accec72f5580f27f395"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.596792908334017,
+      32.27660266724352
+    ]
+  },
+  "createdAt": {
+    "$date": "2023-06-08T00:06:15.454Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-08T00:06:15.454Z"
   },
   "__v": 0
 },{
   "_id": {
-    "$oid": "64381ab7cd15066e55bc0088"
+    "$oid": "64811b93ec72f5580f27f3a5"
   },
   "name": "pepsi 2",
   "cost": 14,
-  "amountAvailable": 6,
+  "amountAvailable": 8,
   "sellerID": {
-    "$oid": "64381952cd15066e55bc006e"
+    "$oid": "6480007b5f8fe223d799afaf"
+  },
+  "machineID": {
+    "$oid": "64811accec72f5580f27f395"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.596792908334017,
+      32.27660266724352
+    ]
+  },
+  "createdAt": null,
+  "updatedAt": {
+    "$date": "2023-06-08T01:26:38.428Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64811da3ec72f5580f27f3b5"
+  },
+  "name": "pepsi 1",
+  "cost": 8,
+  "amountAvailable": 1,
+  "sellerID": {
+    "$oid": "6480006f5f8fe223d799afac"
+  },
+  "machineID": {
+    "$oid": "64800e11b936e499b30855f3"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.849865904249214,
+      32.30459880152494
+    ]
+  },
+  "createdAt": {
+    "$date": "2023-06-08T00:15:31.368Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-08T00:15:31.368Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "64811dceec72f5580f27f3ba"
+  },
+  "name": "chipse 2",
+  "cost": 12,
+  "amountAvailable": 2,
+  "sellerID": {
+    "$oid": "6480006f5f8fe223d799afac"
+  },
+  "machineID": {
+    "$oid": "64800e11b936e499b30855f3"
+  },
+  "location": {
+    "type": "Point",
+    "coordinates": [
+      30.849865904249214,
+      32.30459880152494
+    ]
+  },
+  "createdAt": {
+    "$date": "2023-06-08T00:16:14.589Z"
+  },
+  "updatedAt": {
+    "$date": "2023-06-08T00:16:14.589Z"
   },
   "__v": 0
 }]

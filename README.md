@@ -20,21 +20,22 @@ This API provides endpoints for a vending machine that is accessible to both buy
   - [🛠 Built With](#built-with)
     - [Tech Stack](#tech-stack)
     - [Key Features](#key-features)
-  - [🚀 Live Demo](#live-demo)
 - [💻 Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
+  - [Environment Variables](#environment-variable)
   - [Setup](#setup)
   - [Install](#install)
   - [Usage](#usage)
-  - [Run tests](#run-tests)
-  - [Deployment](#deployment)
+- [📖 API Reference](#api-reference)
+  - [Swagger](#swagger)
+  - [Postman](#postman)
 - [👥 Authors](#authors)
-- [🔭 Future Features](#future-features)
 - [🤝 Contributing](#contributing)
 - [⭐️ Show your support](#support)
-- [🙏 Acknowledgements](#acknowledgements)
+- [🔭 Up next](#up-next)
+- [💎 Lesson Learned](#💎-lessons-learned)
 
-# 📖 Vending <a name="about-project"></a>
+#  <img width="40" height="40" src="https://img.icons8.com/external-wanicon-flat-wanicon/64/external-vending-machine-food-technology-wanicon-flat-wanicon.png" alt="external-vending-machine-food-technology-wanicon-flat-wanicon"/> Vending <a name="about-project"></a>
 ## 🛠 Built With <a name="built-with"></a>
 
 ### Tech Stack <a name="tech-stack"></a>
@@ -77,7 +78,7 @@ This API provides endpoints for a vending machine that is accessible to both buy
 ## 💻 Getting Started <a name="getting-started"></a>
 To get a local copy up and running, follow these steps.
 
-### Prerequisites
+### Prerequisites ❗<a name="prerequisites"></a>
 In order to run this project you need:
 
 <p>
@@ -93,7 +94,7 @@ In order to run this project you need:
     <a href="https://docs.docker.com/compose/"><img src="https://gitlab.developers.cam.ac.uk/uploads/-/system/project/avatar/4542/compose.png" width="50px" height="50"/></a>
  </p>
 
-### :key: Environment Variables
+### Environment Variables  :key: <a name="environment-variable"></a>
 
 To run this project, you will need to add the following environment variables to your .env file
 
@@ -109,7 +110,7 @@ To run this project, you will need to add the following environment variables to
 
 `SALT_WORK_FACTOR` : number of rounds to create salt for hashing<number> ( Example: 10 )
 
-### Setup
+### Setup ⬇️ <a name="setup"></a> 
 
 Clone this repository to your desired folder:
  
@@ -118,7 +119,7 @@ Clone this repository to your desired folder:
  git clone https://github.com/ahmedeid6842/Vending.git
 ```
 
-### Install
+### Install :heavy_check_mark: <a name="install"></a>
 Install this project with **NPM**:
 
  ```bash
@@ -127,232 +128,111 @@ Install this project with **NPM**:
 
 Install this project with **Docker-compose**:
 ```bash
-  docker-compose build
+docker-compose build
 ```
 
-### Usage
+### Usage 🤿 🏃‍♂️ <a name="usage"></a>
 
 - To run the project using **NPM**: 
 ```bash
   npm start
   npm run dev #if your are a developer 
 ```
+![npm-start](./screenshots/npm_start.gif)
+
 - To run the project using **Docker-compose**: 
 ```bash
-  docker-compose up -d
+  docker compose up -d
 ```
+![npm-start](./screenshots/docker-compose_up.gif)
+
 <hr>
 
-> After following the above steps you can now use Vending API
+> #### After following the above steps you can now use Vending API
 
-Open Postman and access the REST APIs throught https://localhost:{port}/ 
-![postman-url](./screenshots/postman-url.png)
+Import this [JSON file](Vending%20REST%20APIs.postman_collection.json) into Postman, and you will be able to use all REST APIs.
 
-Import this [JSON file](Vending.postman_collection.json) into Postman, and you will be able to use all REST APIs.
+![Import_Postman_GIF](./screenshots/import_postman.gif)
 
 If you don't know how to do it, watch this [video](https://www.youtube.com/watch?v=bzquMXmCLUQ).
 
 ----------------
+> #### Importing data to MongoDB
 
-If you would like to import data to mongo collection you will data at this directory [Import Directory](./import/) 
-
-## API Reference
-
-### 1. user/ 
-
-#### •  Register
-```http
-  POST register/
+If you would like to import data to mongo collection you will 
+1. Go to you project your project folder path 
+```bash
+cd ./your-folder
 ```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `userName`      | `string` | **Required** .user's name    |
-| `password`   | `string` | **Required** .user's password |
-| `role`   | `string` | **Required** .user's role at vending "buyer or seller" |
-
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| ! `isLoggedIn` | `middleware`| **Required** you shouldn't be logged in|
-
-#### • Login
-```http
-  POST login/
+2. Run the following commands 
+```bash 
+mongoimport --db vending --collection users --file import/users.json
+mongoimport --db vending --collection machines --file import/machines.json
+mongoimport --db vending --collection products --file import/products.json
 ```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `userName`      | `string` | **Required** .user's name    |
-| `password`   | `string` | **Required** .user's password |
+![Import_Data_GIF](./screenshots/import_mongo.gif)
 
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| ! `isLoggedIn` | `middleware`| **Required** you shouldn't be logged in|
-
-#### • Logout
-```http
-  GET logout/
-```
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to logout |
-
-#### • Get current user
-```http
-  GET /
-```
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to get your profile |
-
-#### • update current user
-```http
-  PUT /
-```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `userName`      | `string` | **Required** .user's name    |
-| `password`   | `string` | **Required** .user's password |
-| `role`   | `string` | **Required** .user's role at vending "buyer or seller" |
-
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to update you profile |
-
-#### • delete current user
-```http
-  DELETE /
-```
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to delete you profile |
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-### 2. product/ 
+## API Reference  <a name="api-reference"></a>
 
-#### •  create product
-```http
-  POST /
-```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `name`      | `string` | **Required** .product's name    |
-| `cost`   | `number` | **Required** .product's cost |
-| `amountAvailable`   | `number` | **Required** . products's amount available in vending machine |
+### Swagger 🤩 
+Here it's swagger REST API reference : **[Swagger Docs Vending](https://app.swaggerhub.com/apis/ahmedeid6842/Vending/1.0.0)**
 
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-|  `isAuthenticated` | `middleware`| **Required** you must be logged in to add new product|
-|  `role` | `middleware`| **Required** your role must be seller to add new product|
+![Swagger_Docs_GIF](./screenshots/swagger-docs.gif)
+
+### Postman 🤩 
+Here it's Postman docs : **[Postman docs Vending](https://documenter.getpostman.com/view/10444163/2s93sabZ84)**
+
+![Postman_Docs_GIF](./screenshots/postman-docs.gif)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-#### •  get product
-```http
-  GET /
-```
-| Request Query | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `page`      | `number` | **Required** . page number of returned prodcut "this for pagination "    |
-| `name`   | `string` | **Optional** .product's name you want to get |
-| `cost`   | `number` | **Optional** . products's cost you want to get |
-| `sellerID`   | `string` | **Optional** get all products for specific seller  |
-
-#### •  Get product
-```http
-  GET /
-```
-| Request Query | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `page`      | `number` | **Required** . page number of returned prodcut "this for pagination "    |
-| `name`   | `string` | **Optional** .product's name you want to get |
-| `cost`   | `number` | **Optional** . products's cost you want to get |
-| `sellerID`   | `string` | **Optional** get all products for specific seller  |
-
-#### •  Update product
-```http
-  PUT /:productID
-```
-| Request parameters | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `productID`      | `string` | **Required** . ID of product you want to update"    |
-
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :------------------------    |
-| `name`      | `string` | **Optional** .product's name    |
-| `cost`   | `number` | **Optional** .product's cost |
-| `amountAvailable`   | `number` | **Optional** . products's amount available in vending machine |
-
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-|  `isAuthenticated` | `middleware`| **Required** you must be logged in to update  product|
-|  `role` | `middleware`| **Required** your role must be seller to add new product|
-| `owner` | | **Required** your must owner of the product to update it|
+## 👤 Author <a name="author"></a>
+**Ahmed Eid 🙋‍♂️**
+- Github: [@ahmedeid6842](https://github.com/ahmedeid6842/)
+- LinkedIn : [Ahmed Eid](https://www.linkedin.com/in/ahmed-eid-0018571b1/)
+- Twitter: [@ahmedeid2684](https://twitter.com/ahmedeid2684)
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-#### •  Delete product
-```http
-  DELETE /:productID
-```
-| Request parameters | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `productID`      | `string` | **Required** . ID of product you want to update"    |
+## 🤝 Contributing 
 
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to delete product|
-|  `role` | `middleware`| **Required** your role must be seller to add new product|
-| `owner` | | **Required** your must owner of the product to update it|
-
-
-### 2. payment/ 
-
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `isAuthenticated` | `middleware`| **Required** you must be logged in to do payment|
-|  `role` | `middleware`| **Required** your role must be buyer to do payment|
-
-#### •  deposit money to user balance
-```http
-  POST /deposit
-```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `amount`      | `number` | **Required** .amount of money want to deposit should only be [ 5, 10, 20, 50, 100 ]   |
-
-#### •  buy something & make order
-```http
-  POST /buy
-```
-| Request Body | Type     | Description                   |
-| :--------    | :------- | :-------------------------    |
-| `productsIDs`      | `array` | **Required** . array of products IDs you want to buy  |
-| `quantites`      | `array` | **Required** . array of quantites for each product you want to buy 'quantites[0] is quantity for productsIDs[0]' |
-
-| Constraints       | Type        | Description                   |
-| :--------         | :-------    | :-------------------------    |
-| `prodcutExist` | `middleware`| **Required** all products IDs should be exist and the prodcut quantity is available|
-| `balance` | ``| **Required** you balance should cover order total cost|
-
-#### •  reset you deposit
-```http
-  PUT /reset
-```
-
-## Contributing
-
-<h4> Always feel free to Contribute, and vending will give you somthing for free 😅. </h4> 
+##### Contributions are always welcome💟, and as a thank you, vending will give you something for free 😅.
 
 <div align="center">
 <img src="https://user-images.githubusercontent.com/57197702/231924653-6aca39c0-1dc3-4bf0-add1-68db033f36ac.gif"/>
 </div>
 
-## Authors
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-- [@AhmedEid](https://github.com/ahmedeid6842/)
 
-    
-## Lessons Learned
+
+
+## ⭐️ Show your support <a name="support"></a>
+
+If you find this project helpful, I would greatly appreciate it if you could leave a star! 🌟 💟
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## 🔭 **Up next**
+
+- [ ] **Forget password:** 💁
+- [ ] **Real time services with socket.io**  📣
+- [ ] **allow adding products' images** 📷
+- [ ] **Using Microservice** ✨
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+## 💎 Lessons Learned
 - handle edge cases
 - Build a strong authorization authentication 
 - There is always something new to learn 👨‍💻.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 
 [contributors-shield]: https://img.shields.io/github/contributors/ahmedeid6842/Vending.svg?style=for-the-badge
@@ -364,7 +244,7 @@ If you would like to import data to mongo collection you will data at this direc
 [issues-shield]: https://img.shields.io/github/issues/ahmedeid6842/Vending.svg?style=for-the-badge
 [issues-url]: https://github.com/ahmedeid6842/Vending/issues
 [license-shield]: https://img.shields.io/github/license/ahmedeid6842/Vending.svg?style=for-the-badge
-[license-url]: https://github.com/ahmedeid6842/vending/blob/master/LICENSE.txt
+[license-url]: https://github.com/ahmedeid6842/vending/blob/master/MIT.md
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/ahmed-eid-0018571b1/
 
