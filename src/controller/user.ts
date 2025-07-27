@@ -1,7 +1,10 @@
-const _ = require("lodash");
-const { create_updateUserValidation, loginValidation } = require("../validators/user")
-const { getUserService, createUserService, updateUserService, deleteUserService } = require("../services/user")
-module.exports.registerController = async (req, res) => {
+import _ from "lodash";
+import {Request, Response} from 'express';
+import { create_updateUserValidation, loginValidation } from "../validators/user";
+import { getUserService, createUserService, updateUserService, deleteUserService } from "../services/user"
+import { IUserDocument } from "../models/user";
+
+export const registerController = async (req: Request, res: Response) => {
     /**
      * DONE: validate if user already logged in 
      * DONE: validate request body to register criteria
@@ -28,7 +31,7 @@ module.exports.registerController = async (req, res) => {
 
 }
 
-module.exports.loginController = async (req, res) => {
+export const loginController = async (req: Request, res: Response) => {
     /**
      * DONE: check if user already logged in or not
      * DONE: validate request body to match login criteria
@@ -57,7 +60,7 @@ module.exports.loginController = async (req, res) => {
 
 }
 
-module.exports.logoutController = async (req, res) => {
+export const logoutController = async (req: Request, res: Response) => {
     /**
      * DONE: delete access token which saved in cookie
     **/
@@ -65,15 +68,15 @@ module.exports.logoutController = async (req, res) => {
     return res.send({ message: "logged out" });
 }
 
-module.exports.getUserController = async (req, res) => {
+export const getUserController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated to get his own data 
      * DONE: get logged in user data
      */
-    return res.status(200).send({ user: _.omit(req.user.toObject(), 'password') });
+    return res.status(200).send({ user: _.omit(req.user?.toObject(), 'password') });
 }
 
-module.exports.updateUserController = async (req, res) => {
+export const updateUserController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated
      * DONE: user must be authorized , only the account owner can update
@@ -87,8 +90,8 @@ module.exports.updateUserController = async (req, res) => {
 
     const { error } = create_updateUserValidation(req.body, true);
     if (error) return res.status(400).send(error.details);
-
-    if (req.body.userName && req.body.userName !== req.user.userName) {
+    let user: any;
+    if (req.body.userName && req.body.userName !== req.user?.userName) {
         user = await getUserService({ userName: req.body.userName })
         if (user) return res.status(400).send({ path: "userName", message: `"userName":${req.body.userName} already exist try one else` });
     }
@@ -107,7 +110,7 @@ module.exports.updateUserController = async (req, res) => {
 
 }
 
-module.exports.deleteUserController = async (req, res) => {
+export const deleteUserController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated
      * DONE: user must be authorized , only the account owner can update

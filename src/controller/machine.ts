@@ -1,6 +1,8 @@
-const { addMachineValidation, getMachineQueryValidation, getNearestParameterValidation, getNearestMachineValidation } = require("../validators/machine")
-const { createMachineService, getMachinesService, deleteMachineService, updateMachineService } = require("../services/machine")
-module.exports.addMachineController = async (req, res) => {
+import { addMachineValidation, getMachineQueryValidation, getNearestMachineValidation } from "../validators/machine";
+import { createMachineService, getMachinesService, deleteMachineService, updateMachineService } from "../services/machine";
+import {Request, Response} from 'express';
+
+export const addMachineController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated
      * DONE: check the user role, only admin can add machine
@@ -16,7 +18,7 @@ module.exports.addMachineController = async (req, res) => {
     return res.status(201).send({ message: "machine added succesfully", machine: savedMachine })
 }
 
-module.exports.getMachineController = async (req, res) => {
+export const getMachineController = async (req: Request, res: Response) => {
     /**
      * DONE: validate incoming request query
      * DONE: if there is a request query passed then find a machin based on query - else return all machines
@@ -25,7 +27,7 @@ module.exports.getMachineController = async (req, res) => {
     const { error } = getMachineQueryValidation(req.query);
     if (error) return res.status(400).send(error.details)
 
-    const machinesPerPage = 10, pageNumber = req.query.page || 1;
+    const machinesPerPage = 10, pageNumber = Number(req.query.page) || 1;
     delete req.query.page;
 
     const machines = await getMachinesService(req.query, true, false, true, (machinesPerPage * pageNumber) - machinesPerPage, machinesPerPage);
@@ -34,7 +36,7 @@ module.exports.getMachineController = async (req, res) => {
     return res.status(200).send(machines);
 }
 
-module.exports.getNearestMachineController = async (req, res) => {
+export const getNearestMachineController = async (req: Request, res: Response) => {
     /**
      * DONE: validate incoming request parameter
      * DONE: find the nearest five machines near to that location
@@ -48,7 +50,7 @@ module.exports.getNearestMachineController = async (req, res) => {
     return res.status(200).send(machines);
 }
 
-module.exports.updateMachineController = async (req, res) => {
+export const updateMachineController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated 
      * DONE: check the user role , only admin is able to update
@@ -65,7 +67,7 @@ module.exports.updateMachineController = async (req, res) => {
     return res.status(201).send({ message: "update succesfully", updatedMachine });
 }
 
-module.exports.deleteMachineController = async (req, res) => {
+export const deleteMachineController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated 
      * DONE: check the user role , only admin is able to delete

@@ -1,8 +1,9 @@
-const { create_updateProdcutValidation, getProductQueryValidation, getNearestProductQueryValidation } = require("../validators/product")
-const { createProductService, getProductsService, updateProductService, deleteProductService, getNearestProductService } = require("../services/product");
-const { getMachinesService, updateMachineService } = require("../services/machine");
+import {Request, Response} from 'express'
+import { create_updateProdcutValidation, getProductQueryValidation, getNearestProductQueryValidation } from "../validators/product";
+import { createProductService, getProductsService, updateProductService, deleteProductService, getNearestProductService } from "../services/product";
+import { getMachinesService, updateMachineService } from "../services/machine";
 
-module.exports.addProductController = async (req, res) => {
+export const addProductController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated 
      * DONE: check the user role , only seller can add product 
@@ -20,7 +21,7 @@ module.exports.addProductController = async (req, res) => {
     if (!machine) return res.status(404).send({ path: "vendingID", message: `no machine found with this ID ${req.body.vendingID}` })
 
     req.body.location = machine[0].location
-    req.body.sellerID = req.user._id;
+    req.body.sellerID = req.user?._id;
 
     let savedProdcut = await createProductService(req.body);
 
@@ -29,7 +30,7 @@ module.exports.addProductController = async (req, res) => {
     return res.status(201).send({ message: "product saved succesfully", product: savedProdcut });
 }
 
-module.exports.getProductController = async (req, res) => {
+export const getProductController = async (req: Request, res: Response) => {
     /**
      * DONE: validate incoming request query 
      * DONE: if there is a requst query passed then find prodcut based on query  - else return all prodcuts
@@ -39,7 +40,7 @@ module.exports.getProductController = async (req, res) => {
     const { error } = getProductQueryValidation(req.query);
     if (error) return res.status(400).send(error.details);
 
-    const productsPerPage = 20, pageNumber = req.query.page || 1;
+    const productsPerPage = 20, pageNumber = Number(req.query.page) || 1;
     delete req.query.page;
 
     const prodcuts = await getProductsService(req.query, true, true, (productsPerPage * pageNumber) - productsPerPage, productsPerPage);
@@ -48,7 +49,7 @@ module.exports.getProductController = async (req, res) => {
     return res.status(200).send(prodcuts);
 }
 
-module.exports.getNearestProductController = async (req, res) => {
+export const getNearestProductController = async (req: Request, res: Response) => {
     /**
      * DONE: validating the incoming request query 
      *  DONE: in the query the client provide his current location     
@@ -63,7 +64,8 @@ module.exports.getNearestProductController = async (req, res) => {
 
     return res.status(200).send(products);
 }
-module.exports.updateProductController = async (req, res) => {
+
+export const updateProductController = async (req: Request, res: Response) => {
     /**
      * DONE: user must be authenticated 
      * DONE: check the user role , only seller can update product 
@@ -78,7 +80,7 @@ module.exports.updateProductController = async (req, res) => {
     let prodcut = await getProductsService({ _id: req.params.productID });
     if (!prodcut) return res.status(404).send({ message: "No product found " });
 
-    if (!prodcut[0].sellerID.equals(req.user._id)) {
+    if (!prodcut[0].sellerID.equals(req.user?._id || "")) {
         return res.status(403).send({ message: "unauthorized to update this product" })
     }
 
@@ -86,7 +88,7 @@ module.exports.updateProductController = async (req, res) => {
     return res.status(201).send({ message: "updated succesfully", updatedProduct });
 }
 
-module.exports.deleteProductController = async (req, res) => {
+export const deleteProductController = async (req: Request, res: Response) => {
     /**
         * DONE: user must be authenticated 
         * DONE: check the user role , only seller can update product 
@@ -97,7 +99,7 @@ module.exports.deleteProductController = async (req, res) => {
     let product = await getProductsService({ _id: req.params.productID });
     if (!product) return res.status(404).send({ path: "productID", message: "No product found " });
 
-    if (toString(product[0].sellerID) != toString(req.user._id)) {
+    if (product[0]?.sellerID?.toString() != req.user?._id?.toString()) {
         return res.status(403).send({ message: "unauthorized to update this product" })
     }
 
