@@ -1,6 +1,6 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-module.exports.addDepositValidation = (deposit) => {
+export const addDepositValidation = (deposit: any) => {
     const schema = Joi.object({
         amount: Joi.number().integer().valid(5, 10, 20, 50, 100).messages({
             'any.only': 'Invalid coin amount, only accept [5, 10, 20, 50, 100]'
