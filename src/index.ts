@@ -1,31 +1,31 @@
 import { Request, Response } from "express";
 
-require("dotenv").config();
-require("express-async-errors");
+import "dotenv/config";
+import "express-async-errors";
 
-const express = require("express");
-const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser");
-const helmet = require("helmet");
-const compression = require("compression");
-const morgan = require("morgan");
+import express from "express";
+import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
 
-const { isAuthenticated } = require("./middleware/isAuthenticated")
-const { role } = require("./middleware/role");
-const { errorHandler } = require("./middleware/errorHandler");
+import { isAuthenticated } from "./middleware/isAuthenticated"
+import { role } from "./middleware/role";
+import { errorHandler } from "./middleware/errorHandler";
 
-const log = require("./utils/logger");
-const { initDB } = require("./config/connectRedis");
+import {log} from "./utils/logger";
+import { initDB } from "./config/connectRedis";
 
 
-const { User } = require("./routes/user")
-const { Product } = require("./routes/product")
-const { Payment } = require("./routes/payment")
-const { Machine } = require("./routes/machine")
+import { User } from "./routes/user"
+import { Product } from "./routes/product"
+import { Payment } from "./routes/payment"
+import { Machine } from "./routes/machine"
 
 const app = express();
 
-require("./utils/cache");
+import "./utils/cache";
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("tiny"));
@@ -48,13 +48,14 @@ app.use("/user", User);
 app.use("/product", Product);
 app.use("/payment", isAuthenticated, role('buyer'), Payment);
 app.use("/machine", Machine)
+
 app.use((req: Request, res: Response) => {
     res.status(404).json({ message: `the endpoint ${req.url} you trying to access not found` });
 });
 app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
-mongoose.connect(process.env.MONGODB_URI).then(async () => {
+mongoose.connect(process.env.MONGODB_URI!).then(async () => {
     return await initDB();
 }).then(() => {
     log.info('connected to Databases 🤝');
