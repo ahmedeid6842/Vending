@@ -1,5 +1,22 @@
-const mongoose = require("mongoose");
-const { MachineModel } = require("../models/machine");
+import mongoose from "mongoose";
+import { MachineModel } from "./machine";
+
+interface IProduct {
+    name: string;
+    cost: number;
+    amountAvailable: number;
+    sellerID: mongoose.Types.ObjectId;
+    machineID: mongoose.Types.ObjectId;
+    location: {
+        type: 'Point';
+        coordinates: [number, number];
+    };
+    createdAt?: Date | null;
+}
+
+export interface IProductDocument extends IProduct, mongoose.Document {
+    _id: mongoose.Types.ObjectId;
+}
 
 const productSchema = new mongoose.Schema({
     name: {
@@ -71,4 +88,4 @@ productSchema.post('findOneAndUpdate', async function (product, next) {
     }
 })
 
-module.exports.ProductModel = mongoose.model('product', productSchema)
+export const ProductModel = mongoose.model<IProductDocument>('product', productSchema)
