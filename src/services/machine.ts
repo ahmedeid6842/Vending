@@ -1,18 +1,19 @@
-const mongoose = require("mongoose");
-const { MachineModel } = require("../models/machine")
+import mongoose from "mongoose";
+import { MachineModel } from "../models/machine";
+import { PipelineStage } from "mongoose";
 
-module.exports.createMachineService = async (machine) => {
+export const createMachineService = async (machine: any) => {
     try {
 
         let savedMachine = await MachineModel.create(machine);
 
         return savedMachine;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.getMachinesService = async (queryMachine, isCache = false, nearest = false, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
+export const getMachinesService = async (queryMachine: any, isCache = false, nearest = false, populateCheck = false, numOfSkip = 0, numOfLimit = 0) => {
     /**
      * DONE: create pipeline for your aggregated query
      *  DONE: add finding by location using a point 
@@ -26,21 +27,23 @@ module.exports.getMachinesService = async (queryMachine, isCache = false, neares
      *      DONE: skip and limit to the query with default value 0 ,, so if no value passed it'll not limit or skip
     */
     try {
-        let pipeLine = [];
+        let pipeLine: PipelineStage[] = [];
         if (queryMachine.location) {
             pipeLine.push({
                 $geoNear: {
-                    near: {
-                        type: 'Point',
-                        coordinates: [parseFloat(queryMachine.location[0]), parseFloat(queryMachine.location[1])]
-                    },
-
-                    distanceField: 'distance',
-                    spherical: true,
-                    maxDistance: nearest ? 5000 : 0
+                  near: {
+                    type: "Point" as const,
+                    coordinates: [
+                      parseFloat(queryMachine.location[0]),
+                      parseFloat(queryMachine.location[1])
+                    ]
+                  },
+                  distanceField: "distance",
+                  spherical: true,
+                  maxDistance: nearest ? 5000 : 0
                 }
-            })
-            delete queryMachine.location;
+              });
+              delete queryMachine.location;
         }
 
         if (queryMachine.name) {
@@ -79,32 +82,33 @@ module.exports.getMachinesService = async (queryMachine, isCache = false, neares
         if (numOfLimit > 0) {
             pipeLine.push({ $limit: numOfLimit });
         }
+
         let machines = await MachineModel.aggregate([...pipeLine]);
         if (machines.length == 0) return false;
 
         return machines
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.updateMachineService = async (queryMachine, updateOperation) => {
+export const updateMachineService = async (queryMachine: any, updateOperation: any) => {
     try {
         let updateProduct = await MachineModel.findOneAndUpdate(queryMachine, updateOperation, { new: true })
 
         if (!updateProduct) return false;
 
         return updateProduct;
-    } catch (error) {
+    } catch (error: any) {
 
     }
 }
 
-module.exports.deleteMachineService = async (queryMachine) => {
+export const deleteMachineService = async (queryMachine: any) => {
     try {
         let deletedMachine = await MachineModel.findOneAndDelete(queryMachine);
         return deletedMachine ? true : false;
-    } catch (error) {
+    } catch (error:any) {
         throw new Error(error)
     }
 }

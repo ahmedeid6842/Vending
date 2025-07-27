@@ -1,48 +1,48 @@
-const { UserModel } = require("../models/user")
+import { UserModel } from "../models/user";
 
-module.exports.getUserService = async (queryObject, isCache = false) => {
+export const getUserService = async (queryObject: any, isCache = false) => {
     try {
 
         let user = await UserModel.findOne(queryObject).cache({ useCache: isCache })
-        return user ? user : false;
-    } catch (error) {
+        return user ? user : null;
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.createUserService = async (user) => {
+export const createUserService = async (user: any) => {
     try {
         let savedUser = await UserModel.create(user);
         return savedUser;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.updateUserService = async (queryObject, updateOperation) => {
+export const updateUserService = async (queryObject: any, updateOperation: any) => {
     try {
         let updatedUser = await UserModel.findOneAndUpdate(queryObject, updateOperation, { new: true })
         return updatedUser;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.deleteUserService = async (queryObject) => {
+export const deleteUserService = async (queryObject: any) => {
     try {
         let deleteUser = await UserModel.findOneAndDelete(queryObject);
         return deleteUser ? true : false;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 }
 
-module.exports.addOrderToUserService = async (userID, order) => {
+export const addOrderToUserService = async (userID: any, order: any) => {
     try {
 
         let updatedUser = await UserModel.findByIdAndUpdate(userID, { $push: { orders: order } }, { new: true })
         return updatedUser;
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(error);
     }
 
