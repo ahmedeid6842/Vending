@@ -1,14 +1,14 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
     registerController,
     loginController,
     logoutController,
     getUserController,
     updateUserController,
     deleteUserController
-} = require('../controller/user');
-const { isAuthenticated } = require("../middleware/isAuthenticated")
-const { isLoggedIn } = require("../middleware/isLoggedIn");
+} from '../controller/user';
+import { isAuthenticated } from "../middleware/isAuthenticated";
+import { isLoggedIn } from "../middleware/isLoggedIn";
 
 const router = express.Router();
 
@@ -20,4 +20,4 @@ router.put("/", isAuthenticated, updateUserController);
 router.delete("/", isAuthenticated, deleteUserController);
 
 
-module.exports.User = router;
+export const User = router;
