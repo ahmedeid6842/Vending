@@ -8,11 +8,11 @@ const { MongoDB } = require("winston-mongodb");
  *  DONE:  limit log's collection size to 10 megabyte and 100 row
  */
 
-const log = createLogger({
+export const log = createLogger({
     format: format.combine(
         format.colorize(),
         format.timestamp(),
-        format.printf(({ timestamp, level, message }) => {
+        format.printf(({ timestamp, level, message }: any) => {
             return `[${timestamp}] ${level} : ${message}`;
         })
     ),
@@ -32,5 +32,3 @@ const log = createLogger({
     ]
 
 });
-
-module.exports = log;

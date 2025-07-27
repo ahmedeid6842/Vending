@@ -1,6 +1,6 @@
-module.exports.paymentChange = (remainingChange) => {
+export const paymentChange = (remainingChange: number) => {
     const coins = [100, 50, 20, 10, 5];
-    const changeCoins = {};
+    const changeCoins: any = {};
     coins.forEach((coin) => {
         if (remainingChange >= coin) {
             const count = Math.floor(remainingChange / coin);
