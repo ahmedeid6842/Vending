@@ -1,6 +1,7 @@
+import { NextFunction, Request, Response } from "express";
 
 //this middleware to check if user is role authorized or not
-module.exports.role = (role) => (req, res, next) => {
+export const role = (role: string) => (req: Request, res: Response, next: NextFunction) => {
     if (req.user.role === role) {
         return next();
     } else {

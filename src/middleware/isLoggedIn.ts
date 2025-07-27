@@ -1,7 +1,8 @@
-const jwt = require("jsonwebtoken")
+import jwt, { JwtPayload } from "jsonwebtoken";
+import {Request, Response, NextFunction} from 'express';
 
 // this middleware to ensure user will n't logged in if he already does
-module.exports.isLoggedIn = async (req, res, next) => {
+export const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
     /**
      * DONE: check if no access token provided then move to next middleware
      * DONE: verify provided, if verfied then user is logged in else isn't.
@@ -14,10 +15,10 @@ module.exports.isLoggedIn = async (req, res, next) => {
             return next();
         }
 
-        let user = jwt.verify(accessJWT, process.env.ACCESS_TOKEN_SECRET);
+        const decodedJWT = jwt.verify(accessJWT, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
 
-        return res.status(400).send({ message: `"userName": ${user.userName} already login, try to logout first` })
-    } catch (err) {
+        return res.status(400).send({ message: `"userName": ${decodedJWT.userName} already login, try to logout first` })
+    } catch (err: any) {
         if (err.message === "jwt expired") {
             return next();
         } else if (err.message == "invalid signature") {
