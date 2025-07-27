@@ -1,3 +1,5 @@
+import { Request, Response } from "express";
+
 require("dotenv").config();
 require("express-async-errors");
 
@@ -37,7 +39,7 @@ process.on("uncaughtException", (ex) => {
 });
 
 //DONE: unhandeled promise rejections
-process.on("unhandledRejection", (ex) => {
+process.on("unhandledRejection", (ex: any) => {
     log.error(ex.message)
     process.exit(1)
 });
@@ -46,7 +48,7 @@ app.use("/user", User);
 app.use("/product", Product);
 app.use("/payment", isAuthenticated, role('buyer'), Payment);
 app.use("/machine", Machine)
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
     res.status(404).json({ message: `the endpoint ${req.url} you trying to access not found` });
 });
 app.use(errorHandler);
