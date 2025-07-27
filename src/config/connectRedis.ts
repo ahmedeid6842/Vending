@@ -1,7 +1,8 @@
-const redis = require("redis")
-const { log } = require("../utils/logger")
-let client;
-const initDB = async function () {
+import redis, { RedisClientType } from "redis";
+import { log } from "../utils/logger";
+
+let client: RedisClientType | null = null;
+export const initDB = async function () {
     //DONE: set up connection with redis
     return new Promise(async (resolve, reject) => {
         if (client) {
@@ -19,15 +20,10 @@ const initDB = async function () {
     })
 }
 
-const getDB = async () => {
+export const getDB = async () => {
     //DONE: get client you just set 
     if (!client) {
         throw Error("DataBase not intialized")
     }
     return client;
-}
-
-module.exports = {
-    initDB,
-    getDB
 }
