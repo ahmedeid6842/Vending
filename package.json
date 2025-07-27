@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
+    "build": "tsc",
+    "start": "node /dist/index.js",
     "dev": "nodemon ./src/index.js"
   },
   "keywords": [],
@@ -31,6 +32,12 @@
     "winston-mongodb": "^5.1.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.20",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
