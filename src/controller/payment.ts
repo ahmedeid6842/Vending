@@ -2,7 +2,6 @@ import {Request,Response} from 'express';
 import { updateProductService } from "../services/product";
 import { updateUserService, addOrderToUserService } from "../services/user";
 import { paymentChange } from "../utils/payment";
-import { addDepositValidation } from "../validators/payment";
 import { IUserDocument } from '../models/user';
 
 export const depositPaymentController = async (req: Request, res: Response) => {
@@ -11,8 +10,6 @@ export const depositPaymentController = async (req: Request, res: Response) => {
      * DONE: validate requst body and verify the coins condition
      * DONE: add deposit value to user collection
      */
-    const { error } = addDepositValidation(req.body);
-    if (error) return res.status(400).send(error.details);
 
     req.user = await updateUserService({ _id: req.user?._id }, { $inc: { deposit: req.body.amount } }) as IUserDocument;
 
