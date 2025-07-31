@@ -1,6 +1,6 @@
 import _ from "lodash";
 import {Request, Response} from 'express';
-import { getUserService, createUserService, updateUserService, deleteUserService } from "../services/user"
+import { getUserService, createUserService, updateUserService, deleteUserService, registerUserService, loginUserService, updateUserWithValidationService } from "../services/user"
 import { IUserDocument } from "../models/user";
 
 export const registerController = async (req: Request, res: Response) => {
@@ -12,20 +12,28 @@ export const registerController = async (req: Request, res: Response) => {
      * DONE: send a cookie containing access token
     **/
 
-    let user = await getUserService({ userName: req.body.userName })
-    if (user) return res.status(400).send({ path: "userName", message: `"userName":${req.body.userName} already exist` });
+    const result = await registerUserService(req.body);
 
-    user = await createUserService(req.body);
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
+    }
 
-    res.cookie("accessjwt", user.generateAuthToken(), {
-        secure: process.env.NODE_ENV == 'production' ? true : false,
-        path: "/",
-        httpOnly: true,
-        sameSite: 'strict'
-    })
+    // Set cookie with access token
+    if (result.data?.user) {
+        res.cookie("accessjwt", result.data.user.generateAuthToken(), {
+            secure: process.env.NODE_ENV == 'production' ? true : false,
+            path: "/",
+            httpOnly: true,
+            sameSite: 'strict'
+        });
 
-    return res.status(201).send({ message: "register succesfully", user: _.omit(user.toObject(), 'password') });
+        return res.status(201).send({ 
+            message: result.message, 
+            user: _.omit(result.data.user.toObject(), 'password') 
+        });
+    }
 
+    return res.status(500).send({ message: "Registration failed" });
 }
 
 export const loginController = async (req: Request, res: Response) => {
@@ -38,21 +46,28 @@ export const loginController = async (req: Request, res: Response) => {
      * DONE: send a cookie contains access token 
     **/
 
-    let user = await getUserService({ userName: req.body.userName });
-    if (!user) return res.status(404).send({ path: "email or password", message: 'Incorrect username or password' })
-    
-    let isMatch = await user.comparePassword(req.body.password);
-    if (!isMatch) return res.status(404).send({ path: "email or password", message: 'Incorrect username or password' })
+    const result = await loginUserService(req.body);
 
-    res.cookie("accessjwt", user.generateAuthToken(), {
-        secure: process.env.NODE_ENV == 'production' ? true : false,
-        path: "/",
-        httpOnly: true,
-        sameSite: 'strict'
-    })
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
+    }
 
-    return res.status(200).send({ message: "login successfully", user: _.omit(user.toObject(), 'password') });
+    // Set cookie with access token
+    if (result.data?.user) {
+        res.cookie("accessjwt", result.data.user.generateAuthToken(), {
+            secure: process.env.NODE_ENV == 'production' ? true : false,
+            path: "/",
+            httpOnly: true,
+            sameSite: 'strict'
+        });
 
+        return res.status(200).send({ 
+            message: result.message, 
+            user: _.omit(result.data.user.toObject(), 'password') 
+        });
+    }
+
+    return res.status(500).send({ message: "Login failed" });
 }
 
 export const logoutController = async (req: Request, res: Response) => {
@@ -81,24 +96,28 @@ export const updateUserController = async (req: Request, res: Response) => {
      * DONE: regenerate access token to recover user attribute in the token
      * DONE: if everything is ok send a cookie with the new access token
      */
-    let user: any;
-    if (req.body.userName && req.body.userName !== req.user?.userName) {
-        user = await getUserService({ userName: req.body.userName })
-        if (user) return res.status(400).send({ path: "userName", message: `"userName":${req.body.userName} already exist try one else` });
+    const result = await updateUserWithValidationService(req.user?.userName || "", req.body);
+
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
     }
 
-    user = await updateUserService({ userName: req.user.userName }, {$set: req.body});
+    // Set cookie with new access token
+    if (result.data?.user) {
+        res.cookie("accessjwt", result.data.user.generateAuthToken(), {
+            secure: process.env.NODE_ENV == 'production' ? true : false,
+            path: "/",
+            httpOnly: true,
+            sameSite: 'strict'
+        });
 
-    res.cookie("accessjwt", user.generateAuthToken(), {
-        secure: process.env.NODE_ENV == 'production' ? true : false,
-        path: "/",
-        httpOnly: true,
-        sameSite: 'strict'
-    })
+        return res.status(201).send({ 
+            message: result.message, 
+            user: _.omit(result.data.user.toObject(), 'password') 
+        });
+    }
 
-    return res.status(201).send({ message: "user updated succesfully", user: _.omit(user.toObject(), 'password') });
-
-
+    return res.status(500).send({ message: "User update failed" });
 }
 
 export const deleteUserController = async (req: Request, res: Response) => {
