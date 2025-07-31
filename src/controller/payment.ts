@@ -3,7 +3,7 @@ import { updateProductService } from "../services/product";
 import { updateUserService, addOrderToUserService } from "../services/user";
 import { paymentChange } from "../utils/payment";
 import { IUserDocument } from '../models/user';
-import { buyPaymentService, resetPaymentService } from '../services/payment';
+import { buyPaymentService, depositPaymentService, resetPaymentService } from '../services/payment';
 
 export const depositPaymentController = async (req: Request, res: Response) => {
     /**
@@ -12,9 +12,9 @@ export const depositPaymentController = async (req: Request, res: Response) => {
      * DONE: add deposit value to user collection
      */
 
-    req.user = await updateUserService({ _id: req.user?._id }, { $inc: { deposit: req.body.amount } }) as IUserDocument;
+    const result = await depositPaymentService(req.user, req.body.amount);
 
-    return res.status(201).send({ message: "Deposit successful", accountBalance: req.user?.deposit });
+    return res.status(201).send({ message: result.message, ...result.data });
 }
 
 export const buyPaymentController = async (req: Request, res: Response) => {

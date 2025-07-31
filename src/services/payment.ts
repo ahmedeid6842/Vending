@@ -4,6 +4,17 @@ import { paymentChange } from "../utils/payment";
 import { updateProductService } from "./product";
 import { updateUserService } from "./user";
 
+export const depositPaymentService = async (user: IUserDocument, amount: number) => {
+    const updatedUser = await updateUserService({ _id: user._id }, { $inc: { deposit: amount } }) as IUserDocument;
+    return {
+        success: true,
+        message: "Deposit successful",
+        data: {
+            accountBalance: updatedUser.deposit
+        }
+    };
+}
+
 export const buyPaymentService = async (user: IUserDocument, orderTotalCost: number, orderedProducts: IOrderedProduct[]) => {
 
     if (Number(user.deposit) < orderTotalCost) {
