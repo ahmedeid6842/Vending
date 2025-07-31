@@ -1,5 +1,4 @@
 import {Request, Response} from 'express'
-import { create_updateProdcutValidation, getProductQueryValidation, getNearestProductQueryValidation } from "../validators/product";
 import { createProductService, getProductsService, updateProductService, deleteProductService, getNearestProductService } from "../services/product";
 import { getMachinesService, updateMachineService } from "../services/machine";
 
@@ -14,9 +13,6 @@ export const addProductController = async (req: Request, res: Response) => {
      * DONE: save the product
      * DONE: push the added product ID to list of products at vending Machine
      */
-    const { error } = create_updateProdcutValidation(req.body);
-    if (error) return res.status(400).send(error.details);
-
     let machine = await getMachinesService({ _id: req.body.machineID })
     if (!machine) return res.status(404).send({ path: "vendingID", message: `no machine found with this ID ${req.body.vendingID}` })
 
@@ -37,8 +33,6 @@ export const getProductController = async (req: Request, res: Response) => {
      * DONE: adding pagination
      * DONE: populate the sellerID to get seller data too
      */
-    const { error } = getProductQueryValidation(req.query);
-    if (error) return res.status(400).send(error.details);
 
     const productsPerPage = 20, pageNumber = Number(req.query.page) || 1;
     delete req.query.page;
@@ -56,9 +50,6 @@ export const getNearestProductController = async (req: Request, res: Response) =
      * DONE: call getNearestProductService to find where nearest 100 KiloMeter product in the query  
      */
 
-    const { error } = getNearestProductQueryValidation(req.query);
-    if (error) return res.status(400).send(error.details);
-
     const products = await getNearestProductService(req.query);
     if (!products) return res.status(404).send({ message: "This product is not available in your vicinity " })
 
@@ -74,8 +65,6 @@ export const updateProductController = async (req: Request, res: Response) => {
      * DONE: check if seller is the product's owner
      * DONE: update product with given ID
      */
-    const { error } = create_updateProdcutValidation(req.body, true);
-    if (error) return res.status(400).send(error.details);
 
     let prodcut = await getProductsService({ _id: req.params.productID });
     if (!prodcut) return res.status(404).send({ message: "No product found " });
