@@ -3,6 +3,7 @@ import { updateProductService } from "../services/product";
 import { updateUserService, addOrderToUserService } from "../services/user";
 import { paymentChange } from "../utils/payment";
 import { IUserDocument } from '../models/user';
+import { buyPaymentService, resetPaymentService } from '../services/payment';
 
 export const depositPaymentController = async (req: Request, res: Response) => {
     /**
@@ -28,31 +29,20 @@ export const buyPaymentController = async (req: Request, res: Response) => {
      * DONE: add order to the buyer embeded order order collection 
      *  DONE: destructure orderTotalCost while you add the order
      */
-
-    if (Number(req.user?.deposit) < req.orderTotalCost) {
-        return res.status(400).send({ path: 'deposit', message: `your order totla cost ${req.orderTotalCost} exceed your deposit ${req.user?.deposit}, you need to pay more` })
+    const user = req.user;
+    const orderTotalCost = req.orderTotalCost;
+    const orderedProducts = req.orderedProducts;
+  
+    const result = await buyPaymentService(user, orderTotalCost, orderedProducts);
+  
+    if (!result.success) {
+      return res.status(400).send(result.error);
     }
-
-    if(req.user){
-        req.user.deposit -= req?.orderTotalCost;
-        await updateUserService({ _id: req.user?._id }, { $inc: { deposit: -req.orderTotalCost } })
-    }
-
-    for (const product of req.orderedProducts) {
-        await updateUserService({ _id: product.sellerID }, { $inc: { deposit: product.totalCost } })
-        await updateProductService({ _id: product._id }, { $inc: { amountAvailable: -product.quantity } })
-    }
-
-    let order = req.orderedProducts.map(product => {
-        const { totalCost, quantity } = product;
-        const plainProduct = product.toObject(); 
-        return { ...plainProduct, totalCost, quantity };
+  
+    return res.status(201).send({
+      message: result.message,
+      ...result.data
     });
-
-    await addOrderToUserService(req.user?._id, order);
-
-    let remainingChange = paymentChange(req.user?.deposit || 0);
-    return res.status(201).send({ message: "ordered succesfully", order, orderTotalCost: req.orderTotalCost, remainingChange })
 }
 
 export const resetPaymentController = async (req: Request, res: Response) => {
@@ -61,9 +51,7 @@ export const resetPaymentController = async (req: Request, res: Response) => {
      * DONE: if there is deposit in coins [5,10,..100]
      * DONE: set the user deposit to zero
      */
-    let remainingChange = paymentChange(req.user?.deposit || 0);
+    const result = await resetPaymentService(req.user);
 
-    await updateUserService({ _id: req.user?._id }, { $set: { deposit: 0 } });
-
-    return res.status(201).send({ message: "your deposit reset succesfull", remainingChange });
+    return res.status(201).send({ message: result.message, ...result?.data });
 }
