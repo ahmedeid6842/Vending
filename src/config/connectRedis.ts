@@ -1,4 +1,4 @@
-import redis, { RedisClientType } from "redis";
+import {createClient, RedisClientType } from "redis";
 import { log } from "../utils/logger";
 
 let client: RedisClientType | null = null;
@@ -10,7 +10,7 @@ export const initDB = async function () {
             resolve(client);
         }
 
-        client = await redis.createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` });
+        client = await createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}` });
         await client.connect();
 
         client.on("error", function (error) {
