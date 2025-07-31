@@ -1,9 +1,10 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
+import Joi from "joi";
+const joiObjectId = require("joi-objectid");
+Joi.objectId = joiObjectId(Joi);
 
 
 
-module.exports.addMachineValidation = (machine, isUpdate = false) => {
+export const addMachineValidation = (machine: any, isUpdate = false) => {
     const locationSchema = Joi.object({
         type: Joi.string().valid('Point').required(),
         coordinates: Joi.array().items(
@@ -20,7 +21,7 @@ module.exports.addMachineValidation = (machine, isUpdate = false) => {
     return vendingMachineSchema.validate(machine, { abortEarly: false });
 }
 
-module.exports.getMachineQueryValidation = (machine) => {
+export const getMachineQueryValidation = (machine: any) => {
     /**
      * DONE: convert location string to array
      * DONE: validate machine object
@@ -42,7 +43,7 @@ module.exports.getMachineQueryValidation = (machine) => {
     return schema.validate(machine);
 }
 
-module.exports.getNearestMachineValidation = (parameters) => {
+export const getNearestMachineValidation = (parameters: any) => {
     parameters.longitude = Number(parameters.longitude);
     parameters.latitude = Number(parameters.latitude);
 

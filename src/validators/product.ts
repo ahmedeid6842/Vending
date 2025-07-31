@@ -1,6 +1,8 @@
-const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
-module.exports.create_updateProdcutValidation = (product, isUpdate = false) => {
+import Joi from "joi";
+const JoiObjectId = require("joi-objectid");
+Joi.objectId = JoiObjectId(Joi);
+
+export const create_updateProdcutValidation = (product: any, isUpdate = false) => {
     const schema = Joi.object({
         name: Joi.string().min(5).max(255).presence(isUpdate ? 'optional' : 'required'),
         cost: Joi.number().min(1).max(9999).presence(isUpdate ? 'optional' : 'required'),
@@ -10,7 +12,7 @@ module.exports.create_updateProdcutValidation = (product, isUpdate = false) => {
     return schema.validate(product);
 }
 
-module.exports.getProductQueryValidation = (product) => {
+export const getProductQueryValidation = (product: any) => {
     const schema = Joi.object({
         page: Joi.number().integer().min(1).max(300).required(),
         name: Joi.string().min(5).max(255).optional(),
@@ -20,7 +22,7 @@ module.exports.getProductQueryValidation = (product) => {
     return schema.validate(product);
 }
 
-module.exports.getNearestProductQueryValidation = (product) => {
+export const getNearestProductQueryValidation = (product: any) => {
 
     if (product.location) {
         product.location = product.location.slice(1, -1).split(',').map(Number)

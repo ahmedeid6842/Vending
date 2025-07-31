@@ -1,10 +1,10 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
     depositPaymentController,
     buyPaymentController,
     resetPaymentController
-} = require('../controller/payment');
-const { productExistAvailableCost } = require("../middleware/payment")
+} from '../controller/payment';
+import { productExistAvailableCost } from "../middleware/payment";
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.post("/deposit", depositPaymentController);
 router.post("/buy", productExistAvailableCost, buyPaymentController);
 router.put("/reset", resetPaymentController);
 
-module.exports.Payment = router;
+export const Payment = router;

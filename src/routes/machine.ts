@@ -1,13 +1,13 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
     addMachineController,
     getMachineController,
     getNearestMachineController,
     updateMachineController,
     deleteMachineController
-} = require('../controller/machine');
-const { isAuthenticated } = require("../middleware/isAuthenticated");
-const { role } = require('../middleware/role');
+} from '../controller/machine';
+import { isAuthenticated } from "../middleware/isAuthenticated";
+import { role } from '../middleware/role';
 
 const router = express.Router();
 
@@ -17,4 +17,4 @@ router.get("/nearest/:longitude/:latitude", getNearestMachineController);
 router.put("/:machineID", isAuthenticated, role("admin"), updateMachineController);
 router.delete("/:machineID", isAuthenticated, role("admin"), deleteMachineController);
 
-module.exports.Machine = router;
+export const Machine = router;

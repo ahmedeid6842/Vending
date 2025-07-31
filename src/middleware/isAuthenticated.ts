@@ -1,8 +1,10 @@
-const jwt = require("jsonwebtoken");
-const { getUserService } = require("../services/user");
-const { log } = require("../utils/logger");
+import  jwt, { JwtPayload } from "jsonwebtoken";
+import { getUserService } from "../services/user";
+import { log } from "../utils/logger";
+import { NextFunction, Request, Response } from "express";
+
 // this middleware to ensure that incoming request from authenticated user
-module.exports.isAuthenticated = async (req, res, next) => {
+export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     /**
      * DONE: check if access token is provided or not
      * DONE: verify the token
@@ -14,14 +16,14 @@ module.exports.isAuthenticated = async (req, res, next) => {
         let accessJWT = req.cookies['accessjwt']
         if (!accessJWT) return res.status(400).send({ path: "Access Token", message: 'no token provided' });
 
-        let user = jwt.verify(accessJWT, process.env.ACCESS_TOKEN_SECRET);
+        const decodedJWT = jwt.verify(accessJWT, process.env.ACCESS_TOKEN_SECRET as string) as JwtPayload;
 
-        user = await getUserService({ userName: user.userName });
+        const user = await getUserService({ userName: decodedJWT.userName });
         if (!user) return res.status(400).send({ path: "user", message: `"userName":${req.body.userName} not found` });
 
         req.user = user;
         next();
-    } catch (err) {
+    } catch (err: any) {
         if (err.message === "jwt expired") {
             return res.status(440).send({ path: "Access Token", message: "your session is expired, login again" });
         } else if (err.message == "invalid signature") {

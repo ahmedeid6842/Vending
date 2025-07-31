@@ -1,10 +1,10 @@
-const Joi = require("joi");
-const { joiPasswordExtendCore } = require("joi-password");
+import Joi from "joi";
+import { joiPasswordExtendCore } from "joi-password";
 
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 
 
-module.exports.create_updateUserValidation = (user, isUpdate = false) => {
+export const create_updateUserValidation = (user: any, isUpdate = false) => {
     const schema = Joi.object({
         userName: Joi.string().min(8).max(255).presence(isUpdate ? 'optional' : 'required'),
         password: joiPassword.string()
@@ -19,7 +19,7 @@ module.exports.create_updateUserValidation = (user, isUpdate = false) => {
     return schema.validate(user);
 }
 
-module.exports.loginValidation = (user) => {
+export const loginValidation = (user: any) => {
     const schema = Joi.object({
         userName: Joi.string().required(),
         password: Joi.string().required()

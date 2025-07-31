@@ -1,7 +1,14 @@
-const { getProductsService } = require("../services/product")
+import {Request, Response, NextFunction} from 'express';
+import { getProductsService } from "../services/product";
+import { IProductDocument } from '../models/product';
+
+export interface IOrderedProduct extends IProductDocument {
+    totalCost: number;
+    quantity: number;
+}
 
 //  middleware function to check product's existence for both prodcutID and amount Available and calculate order cost
-module.exports.productExistAvailableCost = async (req, res, next) => {
+export const productExistAvailableCost = async (req: Request, res: Response, next: NextFunction) => {
 
     /**
      * DONE: find all order products' by passed productsIDs
@@ -20,7 +27,7 @@ module.exports.productExistAvailableCost = async (req, res, next) => {
     let errors = [], orderTotalCost = 0, orderedProducts = [];
     for (let index in productsIDs) {
 
-        let orderedProduct = products.find((product) => product._id == productsIDs[index]);
+        let orderedProduct: any  = products.find((product) => product._id == productsIDs[index]);
         if (!orderedProduct) {
             errors.push({ path: "productID", message: `product with ID:"${productsIDs[index]}" not found` })
         }

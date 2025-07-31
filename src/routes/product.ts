@@ -1,13 +1,13 @@
-const express = require('express');
-const {
+import express from 'express';
+import {
     addProductController,
     getProductController,
     updateProductController,
     deleteProductController,
     getNearestProductController
-} = require('../controller/product');
-const { isAuthenticated } = require("../middleware/isAuthenticated")
-const { role } = require("../middleware/role");
+} from '../controller/product';
+import { isAuthenticated } from "../middleware/isAuthenticated";
+import { role } from "../middleware/role";
 
 const router = express.Router();
 
@@ -18,4 +18,4 @@ router.put("/:productID", isAuthenticated, role('seller'), updateProductControll
 router.delete("/:productID", isAuthenticated, role('seller'), deleteProductController);
 
 
-module.exports.Product = router;
+export const Product = router;
