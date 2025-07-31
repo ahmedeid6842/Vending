@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env*
+
+# Logs
+logs/
+*.log
+
+# Coverage
+coverage/
+
+# Docker
+Dockerfile
+docker-compose.yaml
+
+# Documentation
+*.md
+
+# Screenshots
+screenshots/
+
+# Logo files
+vending-logo/
+
+# Import data
+import/
+
+# Postman collection
+*.postman_collection.json
+
+# Swagger
+swagger.yaml
+
+# Draw.io files
+*.drawio
+
+# TypeScript declaration files
+*.d.ts
+
+# Generated files
+*.js 

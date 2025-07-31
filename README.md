@@ -283,3 +283,98 @@ If you find this project helpful, I would greatly appreciate it if you could lea
 
 [NPM]: https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white
 [NPM-url]: https://www.npmjs.com/
+
+# Vending Machine API
+
+A RESTful API for managing vending machines, products, and payments.
+
+## Development Setup
+
+### Prerequisites
+- Node.js (v18.15.0 or higher)
+- npm or yarn
+- MongoDB
+- Redis
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd Vending
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+### Code Quality Tools
+
+This project uses ESLint and Prettier for code quality and formatting:
+
+#### Available Scripts
+- `npm run lint` - Check for linting errors
+- `npm run lint:fix` - Fix auto-fixable linting errors
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check if code is properly formatted
+- `npm run type-check` - Run TypeScript type checking
+
+#### VS Code Integration
+The project includes VS Code settings for automatic formatting and linting:
+- Format on save with Prettier
+- Auto-fix ESLint errors on save
+- TypeScript support
+
+#### Configuration Files
+- `.prettierrc` - Prettier configuration
+- `.prettierignore` - Files to ignore during formatting
+- `eslint.config.js` - ESLint configuration
+- `.vscode/settings.json` - VS Code workspace settings
+
+### Docker Setup
+
+1. Start the services:
+```bash
+docker-compose up -d
+```
+
+2. Import sample data:
+```bash
+# Follow the import instructions in the import/ directory
+```
+
+### API Documentation
+
+- Swagger UI: `http://localhost:3000/api-docs`
+- Postman Collection: `Vending REST APIs.postman_collection.json`
+
+## Project Structure
+
+```
+src/
+├── config/          # Configuration files
+├── controller/      # Route controllers
+├── middleware/      # Express middleware
+├── models/          # Mongoose models
+├── routes/          # API routes
+├── services/        # Business logic
+├── types/           # TypeScript type definitions
+├── utils/           # Utility functions
+└── validators/      # Joi validation schemas
+```
+
+## License
+
+MIT License - see [MIT.md](MIT.md) for details.
