@@ -9,14 +9,16 @@ import {
 } from '../controller/user';
 import { isAuthenticated } from "../middleware/isAuthenticated";
 import { isLoggedIn } from "../middleware/isLoggedIn";
+import { validate } from '../middleware/validate';
+import { UserValidators } from '../validators/user';
 
 const router = express.Router();
 
-router.post('/register', isLoggedIn, registerController);
-router.post('/login', isLoggedIn, loginController);
+router.post('/register', isLoggedIn, validate(UserValidators.createUserBody, 'body'), registerController);
+router.post('/login', isLoggedIn, validate(UserValidators.loginBody, 'body'), loginController);
 router.get("/logout", logoutController);
 router.get("/", isAuthenticated, getUserController);
-router.put("/", isAuthenticated, updateUserController);
+router.put("/", isAuthenticated, validate(UserValidators.updateUserBody, 'body'), updateUserController);
 router.delete("/", isAuthenticated, deleteUserController);
 
 

@@ -1,7 +1,6 @@
-import {Request, Response} from 'express'
-import { create_updateProdcutValidation, getProductQueryValidation, getNearestProductQueryValidation } from "../validators/product";
-import { createProductService, getProductsService, updateProductService, deleteProductService, getNearestProductService } from "../services/product";
-import { getMachinesService, updateMachineService } from "../services/machine";
+import { Request, Response } from 'express'
+import { getProductsService, updateProductService, deleteProductService, getNearestProductService, addProductService, updateProductWithValidationService, deleteProductWithValidationService } from "../services/product";
+import { updateMachineService } from "../services/machine";
 
 export const addProductController = async (req: Request, res: Response) => {
     /**
@@ -14,20 +13,19 @@ export const addProductController = async (req: Request, res: Response) => {
      * DONE: save the product
      * DONE: push the added product ID to list of products at vending Machine
      */
-    const { error } = create_updateProdcutValidation(req.body);
-    if (error) return res.status(400).send(error.details);
+    const user = req.user;
+    const productData = req.body;
 
-    let machine = await getMachinesService({ _id: req.body.machineID })
-    if (!machine) return res.status(404).send({ path: "vendingID", message: `no machine found with this ID ${req.body.vendingID}` })
+    const result = await addProductService(user, productData);
 
-    req.body.location = machine[0].location
-    req.body.sellerID = req.user?._id;
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
+    }
 
-    let savedProdcut = await createProductService(req.body);
-
-    await updateMachineService({ _id: req.body.machineID }, { $push: { products: savedProdcut._id } });
-
-    return res.status(201).send({ message: "product saved succesfully", product: savedProdcut });
+    return res.status(201).send({
+        message: result.message,
+        ...result.data,
+    });
 }
 
 export const getProductController = async (req: Request, res: Response) => {
@@ -37,8 +35,6 @@ export const getProductController = async (req: Request, res: Response) => {
      * DONE: adding pagination
      * DONE: populate the sellerID to get seller data too
      */
-    const { error } = getProductQueryValidation(req.query);
-    if (error) return res.status(400).send(error.details);
 
     const productsPerPage = 20, pageNumber = Number(req.query.page) || 1;
     delete req.query.page;
@@ -56,9 +52,6 @@ export const getNearestProductController = async (req: Request, res: Response) =
      * DONE: call getNearestProductService to find where nearest 100 KiloMeter product in the query  
      */
 
-    const { error } = getNearestProductQueryValidation(req.query);
-    if (error) return res.status(400).send(error.details);
-
     const products = await getNearestProductService(req.query);
     if (!products) return res.status(404).send({ message: "This product is not available in your vicinity " })
 
@@ -74,18 +67,21 @@ export const updateProductController = async (req: Request, res: Response) => {
      * DONE: check if seller is the product's owner
      * DONE: update product with given ID
      */
-    const { error } = create_updateProdcutValidation(req.body, true);
-    if (error) return res.status(400).send(error.details);
 
-    let prodcut = await getProductsService({ _id: req.params.productID });
-    if (!prodcut) return res.status(404).send({ message: "No product found " });
+    const result = await updateProductWithValidationService(
+        req.params.productID, 
+        req.user?._id?.toString() || "", 
+        req.body
+    );
 
-    if (!prodcut[0].sellerID.equals(req.user?._id || "")) {
-        return res.status(403).send({ message: "unauthorized to update this product" })
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
     }
 
-    let updatedProduct = await updateProductService({ _id: req.params.productID }, { $set: req.body });
-    return res.status(201).send({ message: "updated succesfully", updatedProduct });
+    return res.status(201).send({
+        message: result.message,
+        ...result.data,
+    });
 }
 
 export const deleteProductController = async (req: Request, res: Response) => {
@@ -96,16 +92,14 @@ export const deleteProductController = async (req: Request, res: Response) => {
         * DONE: delete product with given ID
         * DONE: delete this product from the vending Machine products list
     */
-    let product = await getProductsService({ _id: req.params.productID });
-    if (!product) return res.status(404).send({ path: "productID", message: "No product found " });
+    const result = await deleteProductWithValidationService(
+        req.params.productID, 
+        req.user?._id?.toString() || ""
+    );
 
-    if (product[0]?.sellerID?.toString() != req.user?._id?.toString()) {
-        return res.status(403).send({ message: "unauthorized to update this product" })
+    if (!result.success) {
+        return res.status(result.statusCode || 400).send(result.error);
     }
 
-    let deleted = await deleteProductService({ _id: req.params.productID })
-    if (!deleted) return res.status(404).send({ path: "productID", message: `product not found` });
-
-    await updateMachineService({ _id: product[0].machineID }, { $pull: { products: product[0]._id } },)
-    return res.send({ message: "product deleted" })
+    return res.status(200).send({ message: result.message });
 }
