@@ -1,5 +1,5 @@
-import Joi from "joi";
-import { joiPasswordExtendCore } from "joi-password";
+import Joi from 'joi';
+import { joiPasswordExtendCore } from 'joi-password';
 
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 
@@ -13,7 +13,7 @@ const createUserBody = Joi.object({
     .minOfNumeric(6)
     .noWhiteSpaces()
     .required(),
-  role: Joi.string().valid("buyer", "seller").required()
+  role: Joi.string().valid('buyer', 'seller').required(),
 }).options({ abortEarly: false });
 
 const updateUserBody = Joi.object({
@@ -26,18 +26,18 @@ const updateUserBody = Joi.object({
     .minOfNumeric(6)
     .noWhiteSpaces()
     .optional(),
-  role: Joi.string().valid("buyer", "seller").optional()
+  role: Joi.string().valid('buyer', 'seller').optional(),
 })
-  .or("userName", "password", "role")
+  .or('userName', 'password', 'role')
   .options({ abortEarly: false });
 
 const loginBody = Joi.object({
   userName: Joi.string().required(),
-  password: Joi.string().required()
+  password: Joi.string().required(),
 }).options({ abortEarly: false });
 
 export const UserValidators = {
   createUserBody,
   updateUserBody,
-  loginBody
+  loginBody,
 };
