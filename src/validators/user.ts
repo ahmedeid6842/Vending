@@ -3,26 +3,41 @@ import { joiPasswordExtendCore } from "joi-password";
 
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 
+const createUserBody = Joi.object({
+  userName: Joi.string().min(8).max(255).required(),
+  password: joiPassword
+    .string()
+    .minOfSpecialCharacters(1)
+    .minOfLowercase(1)
+    .minOfUppercase(1)
+    .minOfNumeric(6)
+    .noWhiteSpaces()
+    .required(),
+  role: Joi.string().valid("buyer", "seller").required()
+}).options({ abortEarly: false });
 
-export const create_updateUserValidation = (user: any, isUpdate = false) => {
-    const schema = Joi.object({
-        userName: Joi.string().min(8).max(255).presence(isUpdate ? 'optional' : 'required'),
-        password: joiPassword.string()
-            .minOfSpecialCharacters(1)
-            .minOfLowercase(1)
-            .minOfUppercase(1)
-            .minOfNumeric(6)
-            .noWhiteSpaces()
-            .presence(isUpdate ? 'optional' : 'required'),
-        role: Joi.string().valid('buyer', 'seller').presence(isUpdate ? 'optional' : 'required')
-    }).or('userName', 'password', 'role').options({ abortEarly: false })
-    return schema.validate(user);
-}
+const updateUserBody = Joi.object({
+  userName: Joi.string().min(8).max(255).optional(),
+  password: joiPassword
+    .string()
+    .minOfSpecialCharacters(1)
+    .minOfLowercase(1)
+    .minOfUppercase(1)
+    .minOfNumeric(6)
+    .noWhiteSpaces()
+    .optional(),
+  role: Joi.string().valid("buyer", "seller").optional()
+})
+  .or("userName", "password", "role")
+  .options({ abortEarly: false });
 
-export const loginValidation = (user: any) => {
-    const schema = Joi.object({
-        userName: Joi.string().required(),
-        password: Joi.string().required()
-    })
-    return schema.validate(user);
-}
+const loginBody = Joi.object({
+  userName: Joi.string().required(),
+  password: Joi.string().required()
+}).options({ abortEarly: false });
+
+export const UserValidators = {
+  createUserBody,
+  updateUserBody,
+  loginBody
+};
